@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chennai UHI Dashboard — Urban Heat Island Evolution</title>
+  <meta name="description" content="Interactive dashboard tracking Urban Heat Island evolution across 200 Chennai wards from 2016–2024 using Sentinel-2 and Landsat satellite data." />
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- Papa Parse (CSV) -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════ NAV ═══════════════════ -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="10" stroke="#f97316" stroke-width="2"/><circle cx="11" cy="11" r="5" fill="#f97316" opacity="0.4"/><circle cx="11" cy="11" r="2" fill="#f97316"/></svg>
+      <span>Chennai UHI</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#hero">Overview</a></li>
+      <li><a href="#map-section">Map</a></li>
+      <li><a href="#analytics">Analytics</a></li>
+      <li><a href="#methodology">Methodology</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section id="hero" class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Satellite Remote Sensing · 2016 – 2024</div>
+    <h1>Urban Heat Island<br/>Evolution in Chennai</h1>
+    <p class="hero-sub">Tracking land surface temperature, vegetation loss, and built-up expansion across 200 wards using Sentinel-2 and Landsat-8/9 imagery with sequential mining methods.</p>
+    <div class="stat-row" id="hero-stats">
+      <div class="stat-card"><span class="stat-val" id="stat-wards">200</span><span class="stat-label">Wards Analysed</span></div>
+      <div class="stat-card"><span class="stat-val" id="stat-years">9</span><span class="stat-label">Years (2016–2024)</span></div>
+      <div class="stat-card"><span class="stat-val" id="stat-maxlst">–</span><span class="stat-label">Peak LST 2024 (°C)</span></div>
+      <div class="stat-card"><span class="stat-val" id="stat-avglst">–</span><span class="stat-label">Avg LST 2024 (°C)</span></div>
+    </div>
+    <a href="#map-section" class="hero-cta">Explore the Map ↓</a>
+  </div>
+</section>
+
+<!-- ═══════════════════ MAP SECTION ═══════════════════ -->
+<section id="map-section" class="section">
+  <div class="section-header">
+    <h2>Ward-level Heat Risk Map</h2>
+    <p>Click any ward to inspect its LST, NDVI, NDBI, rainfall, and 9-year trend. Use the controls to switch between indicators.</p>
+  </div>
+
+  <div class="map-layout">
+    <!-- Controls -->
+    <div class="map-controls">
+      <div class="control-group">
+        <label>Indicator</label>
+        <div class="btn-group" id="indicator-btns">
+          <button class="btn-tab active" data-ind="LST">LST (°C)</button>
+          <button class="btn-tab" data-ind="NDVI">NDVI</button>
+          <button class="btn-tab" data-ind="NDBI">NDBI</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <label>Year</label>
+        <div class="slider-row">
+          <input type="range" id="year-slider" min="2016" max="2024" value="2024" step="1" />
+          <span id="year-label">2024</span>
+        </div>
+      </div>
+      <div class="legend-box" id="legend-box">
+        <div class="legend-title" id="legend-title">LST (°C)</div>
+        <div class="legend-gradient" id="legend-gradient"></div>
+        <div class="legend-labels">
+          <span id="leg-min">–</span><span id="leg-max">–</span>
+        </div>
+      </div>
+      <div class="control-group">
+        <label>Filter by Zone</label>
+        <select id="zone-filter">
+          <option value="all">All Zones</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Search Ward</label>
+        <input type="text" id="ward-search" placeholder="Ward number…" />
+      </div>
+    </div>
+
+    <!-- Map -->
+    <div id="map"></div>
+
+    <!-- Ward Panel -->
+    <div class="ward-panel" id="ward-panel">
+      <div class="ward-panel-placeholder" id="ward-placeholder">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#334155" stroke-width="2"/><path d="M13 20h14M20 13v14" stroke="#475569" stroke-width="2" stroke-linecap="round"/></svg>
+        <p>Click a ward on the map to inspect it</p>
+      </div>
+      <div class="ward-panel-content" id="ward-content" style="display:none">
+        <div class="ward-header">
+          <h3 id="wp-title">Ward –</h3>
+          <span class="ward-zone-badge" id="wp-zone">–</span>
+        </div>
+        <div class="ward-kpis" id="wp-kpis"></div>
+        <div class="ward-trend-label" id="wp-trend-label"></div>
+        <canvas id="ward-chart" height="160"></canvas>
+        <div class="ward-meta" id="wp-meta"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ ANALYTICS ═══════════════════ -->
+<section id="analytics" class="section section-dark">
+  <div class="section-header">
+    <h2>City-wide Analytics</h2>
+    <p>Aggregated trends, zone comparisons, and regression insights across all 200 wards.</p>
+  </div>
+
+  <div class="analytics-grid">
+    <!-- LST over time -->
+    <div class="chart-card wide">
+      <div class="chart-card-header">
+        <h4>Average LST Over Time (All Wards)</h4>
+        <div class="btn-group-sm" id="agg-metric-btns">
+          <button class="btn-sm active" data-metric="LST">LST</button>
+          <button class="btn-sm" data-metric="NDVI">NDVI</button>
+          <button class="btn-sm" data-metric="NDBI">NDBI</button>
+        </div>
+      </div>
+      <canvas id="city-trend-chart" height="180"></canvas>
+    </div>
+
+    <!-- Zone comparison -->
+    <div class="chart-card">
+      <h4>Avg LST by Zone (2024)</h4>
+      <canvas id="zone-chart" height="220"></canvas>
+    </div>
+
+    <!-- Regression card -->
+    <div class="chart-card">
+      <h4>Regression Model Summary</h4>
+      <div id="regression-panel" class="regression-panel"></div>
+    </div>
+
+    <!-- Distribution -->
+    <div class="chart-card">
+      <h4>LST Distribution (2024)</h4>
+      <canvas id="dist-chart" height="220"></canvas>
+    </div>
+
+    <!-- Rankings -->
+    <div class="chart-card wide">
+      <div class="chart-card-header">
+        <h4>Ward Rankings — 2024</h4>
+        <div class="btn-group-sm" id="rank-metric-btns">
+          <button class="btn-sm active" data-rmetric="LST">Hottest Wards (LST)</button>
+          <button class="btn-sm" data-rmetric="NDVI">Most Vegetated (NDVI)</button>
+          <button class="btn-sm" data-rmetric="NDBI">Most Built-up (NDBI)</button>
+        </div>
+      </div>
+      <canvas id="rank-chart" height="200"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ METHODOLOGY ═══════════════════ -->
+<section id="methodology" class="section">
+  <div class="section-header">
+    <h2>Methodology</h2>
+    <p>Sequential spatial mining pipeline applied to multi-year Sentinel-2 and Landsat imagery over Chennai.</p>
+  </div>
+
+  <div class="method-pipeline">
+    <div class="pipe-step">
+      <div class="pipe-icon">🛰️</div>
+      <div class="pipe-body">
+        <h5>Data Acquisition</h5>
+        <p>Sentinel-2 SR (NDVI, NDBI) + Landsat-8/9 (LST) from Google Earth Engine, 2016–2024. Annual median composites per ward.</p>
+      </div>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step">
+      <div class="pipe-icon">🗺️</div>
+      <div class="pipe-body">
+        <h5>Spatial Aggregation</h5>
+        <p>200 actual Chennai ward polygons via GeoJSON. Mean values extracted per ward using <code>reduceRegions</code> in GEE.</p>
+      </div>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step">
+      <div class="pipe-icon">📈</div>
+      <div class="pipe-body">
+        <h5>Mann-Kendall Trend</h5>
+        <p>Non-parametric monotonic trend test (pymannkendall) per ward LST series. Identifies significant warming/cooling at p &lt; 0.05.</p>
+      </div>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step">
+      <div class="pipe-icon">🔍</div>
+      <div class="pipe-body">
+        <h5>PELT Change-Point</h5>
+        <p>Pruned Exact Linear Time (ruptures) detects structural breaks in the LST series — sudden shifts from events like new development zones.</p>
+      </div>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step">
+      <div class="pipe-icon">📊</div>
+      <div class="pipe-body">
+        <h5>OLS Regression</h5>
+        <p>LST ~ NDVI + NDBI + rainfall across all ward-years. R² = 0.17 at ward scale, revealing scale-dependence of vegetation–heat relationship.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="method-notes">
+    <div class="note-card">
+      <h5>🔬 Key Finding</h5>
+      <p>NDBI (built-up index) has a stronger positive effect on LST (β = 23.5) than NDVI has a cooling effect (β = 5.7), suggesting that urban expansion outpaces vegetation's mitigation capacity in Chennai.</p>
+    </div>
+    <div class="note-card">
+      <h5>⚠️ Limitations</h5>
+      <p>9-year series is short for robust trend detection. Ward-mean averaging smooths sub-ward hotspots. 2015 excluded — Sentinel-2 coverage over India was sparse before 2016.</p>
+    </div>
+    <div class="note-card">
+      <h5>🧰 Tools Used</h5>
+      <p>Python · Google Earth Engine · GeoPandas · pymannkendall · ruptures · scikit-learn · folium · Leaflet.js · Chart.js</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <strong>Chennai Urban Heat Island Dashboard</strong>
+      <span> — 200 wards · 2016–2024 · Sentinel-2 + Landsat</span>
+    </div>
+    <div class="footer-links">
+      <a href="https://github.com" target="_blank">GitHub</a>
+      <span>·</span>
+      <a href="data/ward_timeseries_full.csv" download>Download Data</a>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
+
