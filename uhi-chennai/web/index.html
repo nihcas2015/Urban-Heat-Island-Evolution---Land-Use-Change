@@ -7,6 +7,10 @@
   <meta name="description" content="Ward-level Urban Heat Island monitoring for Chennai — 2016 to 2024. Sentinel-2 + Landsat analysis across 200 municipal wards." />
   <meta property="og:title" content="Chennai UHI Monitor" />
   <meta property="og:description" content="Interactive geospatial dashboard for Urban Heat Island evolution across Chennai." />
+  <title>Indian Cities UHI Monitor</title>
+  <meta name="description" content="Urban Heat Island evolution across major Indian cities — ward and district-level satellite analysis 2016–2024." />
+  <meta property="og:title" content="Indian Cities UHI Monitor" />
+  <meta property="og:description" content="Interactive geospatial dashboard for Urban Heat Island evolution across Chennai, Delhi, Mumbai, Bengaluru, Hyderabad and Kolkata." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" />
@@ -17,6 +21,9 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
+<!-- Interactive Background Particle Canvas -->
+<canvas id="bg-particles" class="bg-particles"></canvas>
 
 <!-- ══════════════ NAVBAR ══════════════ -->
 <header class="navbar" id="navbar">
@@ -34,8 +41,22 @@
       <div>
         <span class="brand-name">Chennai UHI Monitor</span>
         <span class="brand-sub">v1.0 · 200 Wards · 2016–2024</span>
+        <span class="brand-name">Indian Cities UHI Monitor</span>
+        <span class="brand-sub">v2.0 · 6 Cities · 2016–2024</span>
+        <span class="brand-sub">v2.0 · 6 Metros · 2016–2024</span>
       </div>
     </a>
+
+    <!-- City switcher -->
+    <div class="city-switcher" id="city-switcher">
+      <button class="city-btn active" data-city="chennai">Chennai</button>
+      <button class="city-btn" data-city="delhi">Delhi</button>
+      <button class="city-btn" data-city="mumbai">Mumbai</button>
+      <button class="city-btn" data-city="bengaluru">Bengaluru</button>
+      <button class="city-btn" data-city="hyderabad">Hyderabad</button>
+      <button class="city-btn" data-city="kolkata">Kolkata</button>
+    </div>
+
     <nav class="nav-links">
       <a href="#overview" class="nav-link">Overview</a>
       <a href="#map-section" class="nav-link">Map</a>
@@ -65,22 +86,30 @@
     <h1 class="hero-title">
       Urban Heat Island<br/>
       <span class="gradient-text">Evolution in Chennai</span>
+      <span class="gradient-text" id="hero-city-name">Evolution in India</span>
     </h1>
     <p class="hero-desc">
       Ward-level analysis of land surface temperature, vegetation loss, and urban built-up expansion
       across all 200 Chennai Corporation wards from 2016 to 2024 — powered by Sentinel-2 SR and
       Landsat-8/9 satellite imagery.
+    <p class="hero-desc" id="hero-desc">
+      Ward and district-level analysis of land surface temperature, vegetation loss, and urban built-up expansion
+      across 6 major Indian cities from 2016 to 2024 — Sentinel-2 SR and Landsat-8/9 satellite imagery.
     </p>
     <div class="kpi-strip" id="hero-kpis">
       <div class="kpi-item"><span class="kpi-v" id="k-wards">–</span><span class="kpi-l">Wards Analysed</span></div>
+      <div class="kpi-item"><span class="kpi-v" id="k-wards">–</span><span class="kpi-l" id="k-wards-l">Zones</span></div>
       <div class="kpi-sep"></div>
       <div class="kpi-item"><span class="kpi-v" id="k-span">9 yrs</span><span class="kpi-l">2016 → 2024</span></div>
       <div class="kpi-sep"></div>
       <div class="kpi-item"><span class="kpi-v" id="k-maxlst">–</span><span class="kpi-l">Peak LST (°C)</span></div>
+      <div class="kpi-item"><span class="kpi-v" id="k-maxlst">–</span><span class="kpi-l">Peak LST °C</span></div>
       <div class="kpi-sep"></div>
       <div class="kpi-item"><span class="kpi-v" id="k-avglst">–</span><span class="kpi-l">City Avg LST</span></div>
+      <div class="kpi-item"><span class="kpi-v" id="k-avglst">–</span><span class="kpi-l">Avg LST °C</span></div>
       <div class="kpi-sep"></div>
       <div class="kpi-item"><span class="kpi-v" id="k-zones">–</span><span class="kpi-l">Admin Zones</span></div>
+      <div class="kpi-item"><span class="kpi-v" id="k-state">–</span><span class="kpi-l">State</span></div>
     </div>
     <a href="#map-section" class="cta-btn">
       Open Dashboard
@@ -94,6 +123,8 @@
   <div class="section-label">Spatial Explorer</div>
   <h2 class="section-title">Ward-level Heat Risk Map</h2>
   <p class="section-desc">Select an indicator and year. Click any ward for a detailed panel with its 9-year trend.</p>
+  <h2 class="section-title"><span id="map-city-title">Chennai</span> — Heat Risk Map</h2>
+  <p class="section-desc">Select an indicator and year. Click any zone for its 9-year LST trend and indicator breakdown.</p>
 
   <div class="workspace">
 
