@@ -149,9 +149,6 @@ code { font-family: 'JetBrains Mono', monospace; font-size: 0.8em; background: v
   animation: gridPulse 8s ease-in-out infinite;
 }
 .hero-glows { position: absolute; inset: 0; pointer-events: none; }
-.glow { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.18; }
-.glow-1 { width: 600px; height: 400px; top: 10%; left: 20%; background: #f97316; }
-.glow-2 { width: 500px; height: 400px; top: 30%; right: 15%; background: #ef4444; }
 .glow { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.18; will-change: transform; }
 .glow-1 { width: 600px; height: 400px; top: 10%; left: 20%; background: #f97316; animation: floatGlow1 16s ease-in-out infinite; }
 .glow-2 { width: 500px; height: 400px; top: 30%; right: 15%; background: #ef4444; animation: floatGlow2 20s ease-in-out infinite; }
