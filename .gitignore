@@ -1,9 +1,11 @@
 __pycache__/
 *.py[cod]
+*$py.class
 *.pyo
+.cache/
+.pytest_cache/
 .env
 .env.*
-!.env.example
 *.log
 .DS_Store
 Thumbs.db
@@ -14,4 +16,3 @@ dist/
 build/
 .vercel/
 node_modules/
-

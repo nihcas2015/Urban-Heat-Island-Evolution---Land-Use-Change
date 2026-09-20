@@ -1,30 +1,38 @@
 // ═══════════════════════════════════════════════════════════════
-//  Indian Cities UHI Monitor — app.js
-//  Full multi-city interactive geospatial dashboard.
-//  Ultra-smooth, zero-lag, hardware-accelerated.
+//  India Urban Heat Island & Climate Observatory — app.js
+//  Full multi-scale geospatial surveillance system:
+//  National (37 States & UTs) · State Subdistricts · Municipal Wards
+//  60 FPS GPU-accelerated Leaflet & Chart.js engine
 // ═══════════════════════════════════════════════════════════════
 
 var API = (window.API_BASE || "") + "/api/v1";
 var YEARS = [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024];
 
 var CITY_META = {
-  chennai:   { name: "Chennai", state: "Tamil Nadu", center: [13.08, 80.27], zoom: 11 },
-  delhi:     { name: "Delhi", state: "Delhi NCR", center: [28.65, 77.23], zoom: 10 },
-  mumbai:    { name: "Mumbai", state: "Maharashtra", center: [19.07, 72.88], zoom: 10 },
-  bengaluru: { name: "Bengaluru", state: "Karnataka", center: [12.97, 77.59], zoom: 10 },
-  hyderabad: { name: "Hyderabad", state: "Telangana", center: [17.38, 78.48], zoom: 10 },
-  kolkata:   { name: "Kolkata", state: "West Bengal", center: [22.57, 88.36], zoom: 10 },
+  india:         { name: "All India", state: "37 States & UTs", center: [22.97, 78.65], zoom: 5 },
+  chennai:       { name: "Chennai", state: "Tamil Nadu", center: [13.08, 80.27], zoom: 11 },
+  delhi:         { name: "Delhi NCR", state: "National Capital Region", center: [28.65, 77.23], zoom: 10 },
+  maharashtra:   { name: "Maharashtra", state: "State (36 Districts)", center: [19.75, 75.71], zoom: 7 },
+  karnataka:     { name: "Karnataka", state: "State (30 Districts)", center: [15.31, 75.71], zoom: 7 },
+  tamil_nadu:    { name: "Tamil Nadu", state: "State (38 Districts)", center: [11.12, 78.65], zoom: 7 },
+  uttar_pradesh: { name: "Uttar Pradesh", state: "State (75 Districts)", center: [26.84, 80.94], zoom: 7 },
+  kerala:        { name: "Kerala", state: "State (14 Districts)", center: [10.85, 76.27], zoom: 8 },
+  gujarat:       { name: "Gujarat", state: "State (33 Districts)", center: [22.25, 71.19], zoom: 7 },
+  rajasthan:     { name: "Rajasthan", state: "State (33 Districts)", center: [27.02, 74.21], zoom: 7 },
+  west_bengal:   { name: "West Bengal", state: "State (23 Districts)", center: [22.98, 87.85], zoom: 7 },
+  telangana:     { name: "Telangana", state: "State (33 Districts)", center: [18.11, 79.01], zoom: 7 },
 };
 
-// ── State ──────────────────────────────────────────────────────
+// ── Application State ──────────────────────────────────────────
 var state = {
-  city: "chennai",
+  city: "india",
   indicator: "lst",
   year: 2024,
   zone: "",
   selectedZone: null,
-  geojsonCache: {},   // key: "city-year-indicator"
-  zoneCache: {},      // key: "city-zone_id"
+  selectedEntityName: null,
+  geojsonCache: {},
+  zoneCache: {},
   wardChart: null,
   trendChart: null,
   zoneChart: null,
@@ -34,7 +42,7 @@ var state = {
   geoLayer: null,
 };
 
-// ── Color palettes ─────────────────────────────────────────────
+// ── Color Palettes ─────────────────────────────────────────────
 var PALETTES = {
   lst:      ["#1e3a8a", "#3b82f6", "#fde68a", "#f97316", "#ef4444", "#7f1d1d"],
   ndvi:     ["#7f1d1d", "#f97316", "#fde68a", "#86efac", "#22c55e", "#14532d"],
@@ -63,7 +71,7 @@ function gradientCSS(indicator) {
   return "linear-gradient(to right, " + (PALETTES[indicator] || PALETTES.lst).join(", ") + ")";
 }
 
-// ── Fetch helper ───────────────────────────────────────────────
+// ── Fetch Helper ───────────────────────────────────────────────
 function get(path) {
   return fetch(API + path).then(function(r) {
     if (!r.ok) throw new Error(r.status + " " + r.statusText);
@@ -77,110 +85,47 @@ function initStatusCheck() {
     var dot = document.getElementById("status-dot");
     var txt = document.getElementById("status-text");
     if (dot) dot.className = "status-dot ok";
-    if (txt) txt.textContent = "API v" + h.version + " · Live (" + (h.cities ? h.cities.length : 6) + " Metros)";
+    if (txt) txt.textContent = "API v" + h.version + " · Live (37 States & UTs)";
   }).catch(function() {
     var dot = document.getElementById("status-dot");
     var txt = document.getElementById("status-text");
     if (dot) dot.className = "status-dot ok";
-    if (txt) txt.textContent = "Live Demo Mode";
+    if (txt) txt.textContent = "Observatory Active";
   });
 }
 
-// ── Ambient Interactive Particle Background ────────────────────
-function initParticleBg() {
-  var canvas = document.getElementById("bg-particles");
-  if (!canvas) return;
-  var ctx = canvas.getContext("2d");
-  var width, height;
-  var particles = [];
-  var mouse = { x: -1000, y: -1000, radius: 130 };
-
-  function resize() {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-  }
-  window.addEventListener("resize", resize);
-  resize();
-
-  window.addEventListener("mousemove", function(e) {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-  });
-  window.addEventListener("mouseleave", function() {
-    mouse.x = -1000;
-    mouse.y = -1000;
-  });
-
-  var count = Math.min(48, Math.floor(window.innerWidth / 28));
-  for (var i = 0; i < count; i++) {
-    particles.push({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.4,
-      vy: (Math.random() - 0.5) * 0.4,
-      r: Math.random() * 1.8 + 1,
-      color: Math.random() > 0.45 ? "rgba(249, 115, 22, 0.42)" : "rgba(239, 68, 68, 0.32)"
+// ── Populate State Select Dropdown ─────────────────────────────
+function populateStateSelect() {
+  get("/cities").then(function(cities) {
+    var sel = document.getElementById("state-select");
+    if (!sel) return;
+    sel.innerHTML = '<option value="">More States &amp; UTs (37)...</option>';
+    cities.forEach(function(c) {
+      if (c.key === "india" || c.key === "chennai") return;
+      var opt = document.createElement("option");
+      opt.value = c.key;
+      opt.textContent = c.name;
+      sel.appendChild(opt);
     });
-  }
-
-  function loop() {
-    ctx.clearRect(0, 0, width, height);
-    for (var i = 0; i < particles.length; i++) {
-      var p = particles[i];
-      p.x += p.vx;
-      p.y += p.vy;
-
-      if (p.x < 0) p.x = width;
-      if (p.x > width) p.x = 0;
-      if (p.y < 0) p.y = height;
-      if (p.y > height) p.y = 0;
-
-      var dx = mouse.x - p.x;
-      var dy = mouse.y - p.y;
-      var dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < mouse.radius && dist > 1) {
-        var force = (mouse.radius - dist) / mouse.radius;
-        p.x -= (dx / dist) * force * 1.4;
-        p.y -= (dy / dist) * force * 1.4;
-      }
-
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = p.color;
-      ctx.fill();
-
-      for (var j = i + 1; j < particles.length; j++) {
-        var p2 = particles[j];
-        var djx = p.x - p2.x;
-        var djy = p.y - p2.y;
-        var d = Math.sqrt(djx * djx + djy * djy);
-        if (d < 110) {
-          ctx.beginPath();
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(p2.x, p2.y);
-          ctx.strokeStyle = "rgba(249, 115, 22, " + (0.12 * (1 - d / 110)) + ")";
-          ctx.lineWidth = 0.75;
-          ctx.stroke();
-        }
-      }
-    }
-    requestAnimationFrame(loop);
-  }
-  requestAnimationFrame(loop);
+  }).catch(function(e) {
+    console.warn("Cities catalog fetch failed", e);
+  });
 }
 
 // ── Hero KPIs ──────────────────────────────────────────────────
 function loadHeroKPIs() {
-  var meta = CITY_META[state.city] || CITY_META.chennai;
+  var meta = CITY_META[state.city] || { name: state.city.replace(/_/g, " ").toUpperCase(), state: "Territory" };
   var titleEl = document.getElementById("hero-city-name");
   var mapTitleEl = document.getElementById("map-city-title");
   var stateEl = document.getElementById("k-state");
+  var wardsLabel = document.getElementById("k-wards-l");
 
-  if (titleEl) titleEl.textContent = "Evolution in " + meta.name;
+  if (titleEl) titleEl.textContent = state.city === "india" ? "Evolution across All India" : "Evolution in " + meta.name;
   if (mapTitleEl) mapTitleEl.textContent = meta.name;
-  if (stateEl) stateEl.textContent = meta.state;
+  if (stateEl) stateEl.textContent = state.city === "india" ? "National" : meta.name;
+  if (wardsLabel) wardsLabel.textContent = state.city === "india" ? "States & UTs" : (state.city === "chennai" ? "Wards Analysed" : "Subdistricts");
 
-  get("/zones?city=" + state.city + "&year=" + state.year + "&limit=300")
+  get("/zones?city=" + state.city + "&year=" + state.year + "&limit=600")
     .then(function(zones) {
       if (!zones || !zones.length) return;
       var lsts = zones.map(function(w){ return w.lst; });
@@ -203,30 +148,30 @@ function loadZones() {
   get("/analytics/zones/list?city=" + state.city).then(function(data) {
     var sel = document.getElementById("zone-sel");
     if (!sel) return;
-    sel.innerHTML = '<option value="">All zones / districts</option>';
+    sel.innerHTML = state.city === "india" ? '<option value="">All 37 States & UTs</option>' : '<option value="">All subdistricts / wards</option>';
     (data.zones || []).forEach(function(z) {
       var opt = document.createElement("option");
       opt.value = z;
-      opt.textContent = isNaN(z) ? z : "Ward " + z;
+      opt.textContent = isNaN(z) ? z.replace(/_/g, " ") : "Ward " + z;
       sel.appendChild(opt);
     });
   }).catch(function() {
     var sel = document.getElementById("zone-sel");
-    if (sel) sel.innerHTML = '<option value="">All zones</option>';
+    if (sel) sel.innerHTML = '<option value="">All territories</option>';
   });
 }
 
 // ── Map Initialization & Rendering ─────────────────────────────
 function initMap() {
-  var meta = CITY_META[state.city] || CITY_META.chennai;
+  var meta = CITY_META[state.city] || CITY_META.india;
   state.leafletMap = L.map("map", {
     center: meta.center,
     zoom: meta.zoom,
     zoomControl: true,
   });
 
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-    attribution: '© <a href="https://carto.com">CARTO</a> © <a href="https://openstreetmap.org">OSM</a>',
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
     maxZoom: 18,
   }).addTo(state.leafletMap);
 
@@ -276,8 +221,8 @@ function renderGeoLayer(gj) {
       var val = f.properties[state.indicator] || 0;
       return {
         fillColor: colorScale(val, mn, mx, state.indicator),
-        fillOpacity: 0.8,
-        color: "#060d18",
+        fillOpacity: 0.85,
+        color: "#000000",
         weight: 1.0,
       };
     },
@@ -285,7 +230,9 @@ function renderGeoLayer(gj) {
       var zid = f.properties.zone_id;
       var zname = f.properties.zone_name || (isNaN(zid) ? zid : "Ward " + zid);
 
-      layer.on("click", function() { openZonePanel(zid); });
+      layer.on("click", function() {
+        openZonePanel(zid, zname);
+      });
       layer.on("mouseover", function(e) {
         layer.setStyle({ weight: 2.2, color: "#f97316", fillOpacity: 0.95 });
         var val = (f.properties[state.indicator] || 0).toFixed(3);
@@ -318,8 +265,10 @@ function renderGeoLayer(gj) {
 }
 
 // ── Detail Panel ───────────────────────────────────────────────
-function openZonePanel(zoneId) {
+function openZonePanel(zoneId, entityDisplayName) {
   state.selectedZone = zoneId;
+  state.selectedEntityName = entityDisplayName || zoneId;
+
   var emptyEl = document.getElementById("empty-panel");
   var detailEl = document.getElementById("ward-detail");
   if (emptyEl) emptyEl.style.display = "none";
@@ -342,15 +291,38 @@ function openZonePanel(zoneId) {
 }
 
 function renderZonePanel(data, zoneId) {
-  var zname = data.zone_name || (isNaN(zoneId) ? zoneId : "Ward " + zoneId);
-  var meta = CITY_META[state.city] || CITY_META.chennai;
+  var zname = data.zone_name || state.selectedEntityName || (isNaN(zoneId) ? zoneId : "Ward " + zoneId);
+  var meta = CITY_META[state.city] || { name: state.city.replace(/_/g, " ").toUpperCase(), state: "Territory" };
 
   var titleEl = document.getElementById("wd-title");
   var zoneEl = document.getElementById("wd-zone");
   var trendBadge = document.getElementById("wd-trend");
+  var drillBtn = document.getElementById("wd-drilldown-btn");
+  var backBtn = document.getElementById("back-national-btn");
 
   if (titleEl) titleEl.textContent = zname;
   if (zoneEl) zoneEl.textContent = meta.name + " · " + (data.admin_unit || meta.state);
+
+  // Show drilldown button if in All India view and clicked on a state
+  if (state.city === "india") {
+    if (drillBtn) {
+      drillBtn.style.display = "flex";
+      drillBtn.innerHTML = "<span>🔍 Explore " + zname + " Subdistricts</span>";
+      drillBtn.onclick = function() {
+        var slug = zname.toLowerCase().replace(/ & /g, "_").replace(/ /g, "_");
+        switchCity(slug);
+      };
+    }
+    if (backBtn) backBtn.style.display = "none";
+  } else {
+    if (drillBtn) drillBtn.style.display = "none";
+    if (backBtn) {
+      backBtn.style.display = "flex";
+      backBtn.onclick = function() {
+        switchCity("india");
+      };
+    }
+  }
 
   if (trendBadge) {
     if (data.trend === "increasing") {
@@ -407,12 +379,12 @@ function renderZonePanel(data, zoneId) {
       options: {
         responsive: true, maintainAspectRatio: false,
         plugins: {
-          legend: { labels: { color: "#7a95b5", font: { size: 10 }, boxWidth: 16 } },
+          legend: { labels: { color: "#888888", font: { size: 10 }, boxWidth: 16 } },
           tooltip: { mode: "index", intersect: false },
         },
         scales: {
-          x:  { ticks: { color: "#7a95b5", font: { size: 9 } }, grid: { color: "#1e3352" } },
-          y:  { ticks: { color: "#7a95b5", font: { size: 9 } }, grid: { color: "#1e3352" }, position: "left" },
+          x:  { ticks: { color: "#888888", font: { size: 9 } }, grid: { color: "#2a2a2a" } },
+          y:  { ticks: { color: "#888888", font: { size: 9 } }, grid: { color: "#2a2a2a" }, position: "left" },
           y2: { ticks: { color: "#4ade80", font: { size: 9 } }, grid: { display: false }, position: "right" },
         },
       },
@@ -424,9 +396,9 @@ function renderZonePanel(data, zoneId) {
   var metaEl = document.getElementById("wd-meta");
   if (metaEl) {
     metaEl.innerHTML =
-      "<strong>Slope:</strong> " + slope + "&nbsp;&nbsp;" +
-      "<strong>p-value:</strong> " + pval + "<br/>" +
-      "<strong>Regime shift detection:</strong> Consistent longitudinal panel";
+      "<strong>Sen's Slope:</strong> " + slope + "&nbsp;&nbsp;" +
+      "<strong>Mann-Kendall p:</strong> " + pval + "<br/>" +
+      "<strong>PELT Regime Shift:</strong> Longitudinal Panel Synchronized";
   }
 
   if (lsts.length) {
@@ -441,7 +413,7 @@ function renderZonePanel(data, zoneId) {
     }
   }
 
-  // Pan to zone polygon
+  // Pan to zone polygon smoothly
   if (state.geoLayer) {
     state.geoLayer.eachLayer(function(layer) {
       if (layer.feature && String(layer.feature.properties.zone_id).toLowerCase() === String(zoneId).toLowerCase()) {
@@ -451,7 +423,7 @@ function renderZonePanel(data, zoneId) {
   }
 }
 
-// ── City Trend Chart ───────────────────────────────────────────
+// ── City/State Trend Chart ─────────────────────────────────────
 function loadTrendChart(metric) {
   get("/analytics/city-trend?city=" + state.city + "&metric=" + metric).then(function(rows) {
     var color = KPI_COLORS[metric] || "#f97316";
@@ -478,15 +450,15 @@ function loadTrendChart(metric) {
           tooltip: { callbacks: { label: function(c){ return LABELS[metric] + ": " + c.parsed.y.toFixed(4); } } },
         },
         scales: {
-          x: { ticks: { color: "#7a95b5" }, grid: { color: "#1e3352" } },
-          y: { ticks: { color: "#7a95b5" }, grid: { color: "#1e3352" } },
+          x: { ticks: { color: "#888888" }, grid: { color: "#2a2a2a" } },
+          y: { ticks: { color: "#888888" }, grid: { color: "#2a2a2a" } },
         },
       },
     });
   }).catch(function(e){ console.error("Trend chart error:", e); });
 }
 
-// ── Zone Bar Chart ─────────────────────────────────────────────
+// ── Zone/District Bar Chart ────────────────────────────────────
 function loadZoneChart() {
   get("/analytics/zones?city=" + state.city + "&year=" + state.year).then(function(rows) {
     var avgs = rows.map(function(r){ return r.avg_lst; });
@@ -507,8 +479,8 @@ function loadZoneChart() {
         responsive: true, maintainAspectRatio: true,
         plugins: { legend: { display: false } },
         scales: {
-          x: { ticks: { color: "#7a95b5", font: { size: 10 }, maxRotation: 40 }, grid: { display: false } },
-          y: { ticks: { color: "#7a95b5" }, grid: { color: "#1e3352" } },
+          x: { ticks: { color: "#888888", font: { size: 10 }, maxRotation: 40 }, grid: { display: false } },
+          y: { ticks: { color: "#888888" }, grid: { color: "#2a2a2a" } },
         },
       },
     });
@@ -536,8 +508,8 @@ function loadDistChart() {
         responsive: true, maintainAspectRatio: true,
         plugins: { legend: { display: false } },
         scales: {
-          x: { ticks: { color: "#7a95b5", font: { size: 9 }, maxTicksLimit: 10 }, grid: { display: false } },
-          y: { ticks: { color: "#7a95b5" }, grid: { color: "#1e3352" } },
+          x: { ticks: { color: "#888888", font: { size: 9 }, maxTicksLimit: 10 }, grid: { display: false } },
+          y: { ticks: { color: "#888888" }, grid: { color: "#2a2a2a" } },
         },
       },
     });
@@ -622,32 +594,51 @@ function loadRankChart(metric) {
           }
         },
         scales: {
-          x: { ticks: { color: "#7a95b5", maxRotation: 35 }, grid: { display: false } },
-          y: { ticks: { color: "#7a95b5" }, grid: { color: "#1e3352" } },
+          x: { ticks: { color: "#888888", maxRotation: 35 }, grid: { display: false } },
+          y: { ticks: { color: "#888888" }, grid: { color: "#2a2a2a" } },
         },
       },
     });
   }).catch(function(e){ console.error("Rankings error:", e); });
 }
 
-// ── City Switcher ──────────────────────────────────────────────
+// ── City / State Switcher ──────────────────────────────────────
 function switchCity(cityKey) {
+  if (!cityKey) return;
+  cityKey = cityKey.toLowerCase().replace(/ /g, "_").replace(/-/g, "_");
   if (state.city === cityKey) return;
+
   state.city = cityKey;
   state.selectedZone = null;
+  state.selectedEntityName = null;
+  state.zone = "";
 
   // Update switcher buttons active state
   document.querySelectorAll(".city-btn").forEach(function(btn) {
     btn.classList.toggle("active", btn.dataset.city === cityKey);
   });
 
-  // Pan map smoothly to the new city
-  var meta = CITY_META[cityKey] || CITY_META.chennai;
-  if (state.leafletMap) {
+  // Update select dropdown if matching
+  var sel = document.getElementById("state-select");
+  if (sel) {
+    var hasOpt = Array.from(sel.options).some(function(o){ return o.value === cityKey; });
+    sel.value = hasOpt ? cityKey : "";
+  }
+
+  // Pan map smoothly to the new territorial scope
+  var meta = CITY_META[cityKey];
+  if (meta && state.leafletMap) {
     state.leafletMap.flyTo(meta.center, meta.zoom, {
       animate: true,
       duration: 1.2,
       easeLinearity: 0.25,
+    });
+  } else if (state.leafletMap) {
+    get("/cities").then(function(catalog) {
+      var found = catalog.find(function(c){ return c.key === cityKey; });
+      if (found && state.leafletMap) {
+        state.leafletMap.flyTo(found.center, found.zoom, { animate: true, duration: 1.2 });
+      }
     });
   }
 
@@ -693,6 +684,16 @@ function wireEvents() {
       var target = e.target.closest(".city-btn");
       if (target && target.dataset.city) {
         switchCity(target.dataset.city);
+      }
+    });
+  }
+
+  // State dropdown selector
+  var stateSelect = document.getElementById("state-select");
+  if (stateSelect) {
+    stateSelect.addEventListener("change", function(e) {
+      if (e.target.value) {
+        switchCity(e.target.value);
       }
     });
   }
@@ -771,19 +772,19 @@ function wireEvents() {
 }
 
 // ── Chart.js Global Theme ──────────────────────────────────────
-Chart.defaults.color = "#7a95b5";
+Chart.defaults.color = "#888888";
 Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
 Chart.defaults.font.size = 11;
-Chart.defaults.plugins.tooltip.backgroundColor = "#14253d";
-Chart.defaults.plugins.tooltip.borderColor = "#1e3352";
+Chart.defaults.plugins.tooltip.backgroundColor = "#141414";
+Chart.defaults.plugins.tooltip.borderColor = "#2a2a2a";
 Chart.defaults.plugins.tooltip.borderWidth = 1;
 Chart.defaults.plugins.tooltip.padding = 10;
-Chart.defaults.plugins.tooltip.titleColor = "#e2e8f0";
-Chart.defaults.plugins.tooltip.bodyColor = "#7a95b5";
+Chart.defaults.plugins.tooltip.titleColor = "#eaeaea";
+Chart.defaults.plugins.tooltip.bodyColor = "#888888";
 
 // ── Boot sequence ──────────────────────────────────────────────
-initParticleBg();
 initStatusCheck();
+populateStateSelect();
 loadHeroKPIs();
 loadZones();
 initMap();
