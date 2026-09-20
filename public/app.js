@@ -240,11 +240,10 @@
       preferCanvas: true
     });
 
-    // CartoDB Dark Matter Base Layer (Clean unlabelled dark canvas)
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png", {
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://openstreetmap.org">OSM</a>',
-      subdomains: "abcd",
-      maxZoom: 19
+    // ESRI World Dark Gray Canvas (Clean, unlabelled dark canvas with no API key requirement or watermarks)
+    L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
+      attribution: '&copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+      maxZoom: 16
     }).addTo(appState.map);
 
     // Initial load All India
@@ -1181,6 +1180,11 @@
     }).catch(function(err) {
       console.error("Initialization failed:", err);
     });
+
+    // Expose for external control, test harnesses, and report generation
+    window.appState = appState;
+    window.loadTerritory = loadTerritory;
+    window.selectZoneFeature = selectZoneFeature;
   }
 
   // Start on DOM ready
@@ -1191,3 +1195,4 @@
   }
 
 })();
+
