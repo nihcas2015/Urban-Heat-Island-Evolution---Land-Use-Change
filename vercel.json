@@ -1,13 +1,11 @@
 {
   "functions": {
     "api/index.py": {
-      "includeFiles": "data/**",
+      "includeFiles": "{backend/**,data/**}",
       "maxDuration": 15
     }
   },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.py" },
-    { "source": "/", "destination": "/web/index.html" },
-    { "source": "/(.*)", "destination": "/web/$1" }
+    { "source": "/api/(.*)", "destination": "/api/index.py" }
   ]
 }

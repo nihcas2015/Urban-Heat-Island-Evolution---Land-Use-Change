@@ -1,9 +1,6 @@
 """
 backend/cities.py
 -----------------
-Territorial catalog for national (All India), state-level (37 States & UTs),
-and municipal ward-level (Chennai) environmental monitoring.
-Boundary data sourced on-demand from datta07/INDIAN-SHAPEFILES.
 Territorial catalog for National (All India), Metropolitan Cities (20 Cities with Municipal Wards),
 and State-Level (37 States & UTs with Administrative Districts).
 All boundary data is embedded locally in data/geojson/.
@@ -21,45 +18,6 @@ INDIA_STATES = [
     "TELANGANA", "TRIPURA", "UTTAR PRADESH", "UTTARAKHAND", "WEST BENGAL"
 ]
 
-# Mapping each state to its exact directory and GeoJSON file in datta07/INDIAN-SHAPEFILES
-STATE_GEOJSON_FILES = {
-    "ANDAMAN & NICOBAR": ("ANDAMAN & NICOBAR", "ANDAMAN & NICOBAR_SUBDISTRICTS.geojson"),
-    "ANDHRA PRADESH": ("ANDHRA PRADESH", "ANDHRA PRADESH_SUBDISTRICTS.geojson"),
-    "ARUNACHAL PRADESH": ("ARUNACHAL PRADESH", "ARUNACHAL PRADESH_SUBDISTRICTS.geojson"),
-    "ASSAM": ("ASSAM", "ASSAM_SUBDISTRICTS.geojson"),
-    "BIHAR": ("BIHAR", "BIHAR_SUBDISTRICTS.geojson"),
-    "CHANDIGARH": ("CHANDIGARH", "CHANDIGARH_SUBDISTRICTS.geojson"),
-    "CHHATTISGARH": ("CHHATTISGARH", "CHATTISGARH_SUBDISTRICTS.geojson"),
-    "DADRA & NAGAR HAVELI": ("DADRA & NAGAR HAVELI", "DADAR & NAGAR HAVELI_SUBDISTRICTS.geojson"),
-    "DAMAN & DIU": ("DAMAN & DIU", "DAMAN & DIU_SUBDISTRICTS.geojson"),
-    "DELHI": ("DELHI", "DELHI_SUBDISTRICTS.geojson"),
-    "GOA": ("GOA", "GOA_SUBDISTRICTS.geojson"),
-    "GUJARAT": ("GUJARAT", "GUJARAT_SUBDISTRICTS.geojson"),
-    "HARYANA": ("HARYANA", "HARYANA_SUBDISTRICTS.geojson"),
-    "HIMACHAL PRADESH": ("HIMACHAL PRADESH", "HIMACHAL PRADESH_SUBDISTRICTS.geojson"),
-    "JAMMU & KASHMIR": ("JAMMU & KASHMIR", "JAMMU & KASHMIR_SUBDISTRICTS.geojson"),
-    "JHARKHAND": ("JHARKHAND", "JHARKHAND_SUBDISTRICTS.geojson"),
-    "KARNATAKA": ("KARNATAKA", "KARNATAKA_SUBDISTRICTS.geojson"),
-    "KERALA": ("KERALA", "KERALA_SUBDISTRICTS.geojson"),
-    "LADAKH": ("LADAKH", "LADAKH_SUBDISTRICTS.geojson"),
-    "LAKSHADWEEP": ("LAKSHADWEEP", "LAKSHADWEEP_SUBDISTRICTS.geojson"),
-    "MADHYA PRADESH": ("MADHYA PRADESH", "MADHYA PRADESH_SUBDISTRICTS.geojson"),
-    "MAHARASHTRA": ("MAHARASHTRA", "MAHARASHTRA_SUBDISTRICTS.geojson"),
-    "MANIPUR": ("MANIPUR", "MANIPUR_SUBDISTRICTS.geojson"),
-    "MEGHALAYA": ("MEGHALAYA", "MEGHALAYA_SUBDISTRICTS.geojson"),
-    "MIZORAM": ("MIZORAM", "MIZORAM_SUBDISTRICTS.geojson"),
-    "NAGALAND": ("NAGALAND", "NAGALAND_SUBDISTRICTS.geojson"),
-    "ODISHA": ("ODISHA", "ODISHA_SUBDISTRICTS.geojson"),
-    "PUDUCHERRY": ("PUDUCHERRY", "PUDUCHERRY_SUBDISTRICTS.geojson"),
-    "PUNJAB": ("PUNJAB", "PUNJAB_SUBDISTRICTS.geojson"),
-    "RAJASTHAN": ("RAJASTHAN", "RAJASTHAN_SUBDISTRICTS.geojson"),
-    "SIKKIM": ("SIKKIM", "SIKKIM_SUBDISTRICTS.geojson"),
-    "TAMIL NADU": ("TAMIL NADU", "TAMILNADU_SUBDISTRICTS.geojson"),
-    "TELANGANA": ("TELANGANA", "TELANGANA_SUBDISTRICTS.geojson"),
-    "TRIPURA": ("TRIPURA", "TRIPURA_SUBDISTRICTS.geojson"),
-    "UTTAR PRADESH": ("UTTAR PRADESH", "UTTAR PRADESH_SUBDISTRICTS.geojson"),
-    "UTTARAKHAND": ("UTTARAKHAND", "UTTARAKHAND_SUBDISTRICTS.geojson"),
-    "WEST BENGAL": ("WEST BENGAL", "WEST BENGAL_SUBDISTRICTS.geojson"),
 # Top 20 Indian Metropolitan Cities with actual municipal ward GeoJSONs embedded
 METRO_CITIES = {
     "bengaluru":        {"name": "Bengaluru",        "state": "Karnataka",      "center": [12.9716, 77.5946], "zoom": 11, "type": "BBMP Municipal Wards"},
@@ -84,7 +42,6 @@ METRO_CITIES = {
     "pimpri_chinchwad": {"name": "Pimpri Chinchwad", "state": "Maharashtra",    "center": [18.6298, 73.7997], "zoom": 11, "type": "PCMC Municipal Wards"},
 }
 
-# Scientific regional climate baselines for all 37 Indian States
 # Regional climate baselines for all 37 Indian States
 STATE_CLIMATES = {
     "RAJASTHAN": {"lst": 43.4, "ndvi": 0.09, "ndbi": 0.14, "rain": 450, "spread": 4.6},
@@ -167,11 +124,6 @@ STATE_CENTERS = {
     "LAKSHADWEEP": ([10.56, 72.64], 8),
 }
 
-# Metropolitan aliases to states or municipal extractions
-METRO_ALIASES = {
-    "mumbai": "maharashtra",
-    "bengaluru": "karnataka",
-    "hyderabad": "telangana",
 # Aliases
 ALIASES = {
     "ahmedabad": "ahmadabad",
@@ -188,7 +140,6 @@ def normalize_slug(s):
     if not s:
         return "india"
     clean = s.strip().lower().replace("-", "_").replace(" ", "_")
-    return METRO_ALIASES.get(clean, clean)
     return ALIASES.get(clean, clean)
 
 
@@ -204,7 +155,6 @@ def get_state_from_slug(slug):
 
 
 def get_scope_info(scope_key):
-    """Resolve complete scope configuration for national, municipal, or state level."""
     """Resolve complete territorial configuration for national, metropolitan, or state scope."""
     slug = normalize_slug(scope_key)
 
@@ -219,21 +169,14 @@ def get_scope_info(scope_key):
             "is_national": True,
             "is_metro": False,
             "use_local_wards": False,
-            "geojson_url": "https://raw.githubusercontent.com/datta07/INDIAN-SHAPEFILES/master/INDIA/INDIA_STATES.geojson",
             "baseline": {"lst": 36.5, "ndvi": 0.22, "ndbi": 0.08, "rainfall": 1250, "spread": 5.0},
         }
 
-    if slug == "chennai":
     # 2. Metropolitan City (Wards)
     if slug in METRO_CITIES:
         m = METRO_CITIES[slug]
         st_clim = STATE_CLIMATES.get(m["state"].upper(), {"lst": 38.0, "ndvi": 0.16, "ndbi": 0.10, "rain": 1100, "spread": 4.0})
         return {
-            "key": "chennai",
-            "name": "Chennai",
-            "state": "Tamil Nadu",
-            "center": [13.08, 80.27],
-            "zoom": 11,
             "key": slug,
             "name": m["name"],
             "state": m["state"],
@@ -242,8 +185,6 @@ def get_scope_info(scope_key):
             "is_national": False,
             "is_metro": True,
             "use_local_wards": True,
-            "geojson_url": None,
-            "baseline": {"lst": 39.4, "ndvi": 0.18, "ndbi": 0.06, "rainfall": 1400, "spread": 4.3},
             "baseline": {
                 "lst": st_clim["lst"] + 0.8,
                 "ndvi": max(0.08, st_clim["ndvi"] - 0.04),
@@ -256,17 +197,10 @@ def get_scope_info(scope_key):
     # 3. State Scope (Districts)
     st_name = get_state_from_slug(slug)
     if not st_name:
-        # Fallback to India if unknown
         return get_scope_info("india")
 
-    folder_name, file_name = STATE_GEOJSON_FILES.get(st_name, (st_name, f"{st_name}_SUBDISTRICTS.geojson"))
     center, zoom = STATE_CENTERS.get(st_name, ([22.0, 78.0], 7))
     clim = STATE_CLIMATES.get(st_name, {"lst": 37.0, "ndvi": 0.20, "ndbi": 0.08, "rain": 1200, "spread": 4.0})
-
-    import urllib.parse
-    encoded_folder = urllib.parse.quote(folder_name)
-    encoded_file = urllib.parse.quote(file_name)
-    url = f"https://raw.githubusercontent.com/datta07/INDIAN-SHAPEFILES/master/STATES/{encoded_folder}/{encoded_file}"
 
     return {
         "key": slug,
@@ -277,7 +211,6 @@ def get_scope_info(scope_key):
         "is_national": False,
         "is_metro": False,
         "use_local_wards": False,
-        "geojson_url": url,
         "baseline": {
             "lst": clim["lst"],
             "ndvi": clim["ndvi"],

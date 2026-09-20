@@ -281,6 +281,6 @@ def zone_list(city: str = Query("india")):
 
 
 # ── Serve Frontend ────────────────────────────────────────────
-_web = os.path.join(os.path.dirname(__file__), "..", "web")
-if os.path.isdir(_web):
-    app.mount("/", StaticFiles(directory=_web, html=True), name="web")
+_static_dir = os.path.join(os.path.dirname(__file__), "..", "public")
+if os.path.isdir(_static_dir):
+    app.mount("/", StaticFiles(directory=_static_dir, html=True), name="public")
