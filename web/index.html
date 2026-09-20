@@ -7,6 +7,7 @@
   <meta name="description" content="National &amp; Municipal Urban Heat Island Observatory for India — 2016 to 2024 longitudinal analysis using Sentinel-2 &amp; Landsat-8/9." />
   <meta property="og:title" content="India Urban Heat Island Observatory" />
   <meta property="og:description" content="Interactive geospatial surveillance of land surface temperature and land-use change across All India, 37 States/UTs, subdistricts, and municipal wards." />
+  <meta property="og:description" content="Interactive geospatial surveillance of land surface temperature and land-use change across All India, 37 States/UTs, and 20 Metropolitan Cities." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" />
@@ -33,12 +34,21 @@
       <div>
         <span class="brand-name">India UHI Observatory</span>
         <span class="brand-sub">v2.2 · National &amp; Municipal Surveillance</span>
+        <span class="brand-sub">National &amp; Municipal Geospatial Intelligence</span>
       </div>
     </a>
 
     <!-- Territory Switcher -->
     <div class="city-switcher" id="city-switcher">
       <button class="city-btn active" data-city="india">All India</button>
+      <button class="city-btn" data-city="bengaluru">Bengaluru</button>
+      <button class="city-btn" data-city="delhi">Delhi</button>
+      <button class="city-btn" data-city="mumbai">Mumbai</button>
+      <button class="city-btn" data-city="hyderabad">Hyderabad</button>
+      <button class="city-btn" data-city="chennai">Chennai</button>
+      <button class="city-btn" data-city="ahmadabad">Ahmedabad</button>
+      <button class="city-btn" data-city="pune">Pune</button>
+      <button class="city-btn" data-city="jaipur">Jaipur</button>
       <button class="city-btn" data-city="tamil_nadu">Tamil Nadu</button>
       <button class="city-btn" data-city="maharashtra">Maharashtra</button>
       <button class="city-btn" data-city="karnataka">Karnataka</button>
@@ -49,6 +59,8 @@
       <button class="city-btn" data-city="chennai">Chennai (Wards)</button>
       <select class="switcher-select" id="state-select" aria-label="Select State or Territory">
         <option value="">More States &amp; UTs (37)...</option>
+      <select class="switcher-select" id="state-select" aria-label="Select City or State">
+        <option value="">All Cities &amp; States (58)...</option>
       </select>
     </div>
 
@@ -73,6 +85,8 @@
       <span class="chip chip-geo">🛰 Sentinel-2 &amp; Landsat-8/9</span>
       <span class="chip chip-seq">📈 Sequential Spatial Mining</span>
       <span class="chip chip-live">⚡ 37 States &amp; UTs Dynamic</span>
+      <span class="chip chip-seq">📈 20 Metros &amp; 37 States</span>
+      <span class="chip chip-live">⚡ Instant Embedded GeoJSON</span>
     </div>
     <h1 class="hero-title">
       Urban Heat Island<br/>
@@ -80,6 +94,7 @@
     </h1>
     <p class="hero-desc" id="hero-desc">
       Longitudinal multi-scale analysis of Land Surface Temperature (LST), vegetation index (NDVI), and built-up index (NDBI) across all 37 Indian States, Union Territories, subdistricts, and municipal wards from 2016 to 2024.
+      Longitudinal multi-scale surveillance of Land Surface Temperature (LST), vegetation cover (NDVI), and built-up expansion (NDBI) across all 37 Indian States, Union Territories, and 20 major metropolitan cities from 2016 to 2024.
     </p>
     <div class="kpi-strip" id="hero-kpis">
       <div class="kpi-item"><span class="kpi-v" id="k-wards">37</span><span class="kpi-l" id="k-wards-l">States &amp; UTs</span></div>
@@ -104,6 +119,7 @@
   <div class="section-label">Spatial Explorer</div>
   <h2 class="section-title"><span id="map-city-title">All India</span> — Thermal Risk Map</h2>
   <p class="section-desc">Select an indicator and observation year. Click any territory to inspect its 9-year longitudinal trend or drill down to subdistricts.</p>
+  <p class="section-desc">Select an environmental indicator and year. Click any ward or district to inspect its longitudinal trend in the inspection panel.</p>
 
   <div class="workspace">
     <!-- Left Controls -->
@@ -142,6 +158,7 @@
         <div class="search-wrap">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="var(--text-muted)" stroke-width="1.2"/><path d="M10 10l2 2" stroke="var(--text-muted)" stroke-width="1.2" stroke-linecap="round"/></svg>
           <input class="search-inp" id="ward-search" type="text" placeholder="State, district, or ward…" />
+          <input class="search-inp" id="ward-search" type="text" placeholder="Ward or district name…" />
         </div>
       </div>
 
@@ -166,6 +183,8 @@
         </svg>
         <p>Click any territory on the map</p>
         <p class="empty-sub">or use the search bar to inspect local trends</p>
+        <p>Click any feature on the map</p>
+        <p class="empty-sub">or search by name to inspect local indicators</p>
       </div>
       <div class="ward-detail" id="ward-detail" style="display:none">
         <div class="wd-header">
@@ -181,6 +200,7 @@
 
         <div class="wd-kpis" id="wd-kpis"></div>
         <div class="wd-chart-title">Land Surface Temperature 2016–2024</div>
+        <div class="wd-chart-title">Longitudinal Trend 2016–2024</div>
         <div class="wd-chart-wrap"><canvas id="ward-chart"></canvas></div>
         <div class="wd-meta" id="wd-meta"></div>
         <div class="wd-stat-row" id="wd-stat-row"></div>
@@ -194,6 +214,8 @@
   <div class="section-label">Analytics</div>
   <h2 class="section-title">Observatory Insights</h2>
   <p class="section-desc">Aggregated time-series, spatial comparisons, driver regression models, and thermal rankings.</p>
+  <h2 class="section-title">Longitudinal &amp; Risk Intelligence</h2>
+  <p class="section-desc">Multi-year trajectory evolution and priority zone rankings across the active territory.</p>
 
   <div class="analytics-layout">
     <!-- Trend Chart -->
@@ -202,6 +224,8 @@
         <div>
           <div class="tile-title">Territorial Indicator Trend</div>
           <div class="tile-sub">Longitudinal evolution 2016–2024</div>
+          <div class="tile-title">Territory Indicator Trajectory</div>
+          <div class="tile-sub">Annual average across all administrative features (2016–2024)</div>
         </div>
         <div class="tab-group" id="trend-tabs">
           <button class="tab active" data-metric="lst">LST</button>
@@ -247,10 +271,12 @@
     </div>
 
     <!-- Rankings -->
+    <!-- Rankings Chart -->
     <div class="chart-tile tile-wide">
       <div class="tile-header">
         <div>
           <div class="tile-title">Territory Rankings — 2024</div>
+          <div class="tile-title">Thermal &amp; Land Cover Priority Rankings</div>
           <div class="tile-sub">Highest and lowest records by selected environmental indicator</div>
         </div>
         <div class="tab-group" id="rank-tabs">
@@ -287,6 +313,8 @@
         <h4>Spatial Aggregation</h4>
         <p>National 37 States/UTs, state subdistricts, and Chennai 200 wards. Zonal statistics computed via spatial intersection and regional reduction.</p>
         <div class="pipe-tags"><span>GeoJSON</span><span>Zonal Stats</span><span>GeoPandas</span></div>
+        <p>National 37 States/UTs, 20 Metropolitan Cities (municipal wards), and state administrative districts. Zonal statistics computed via spatial reduction.</p>
+        <div class="pipe-tags"><span>GeoJSON</span><span>Zonal Stats</span><span>Wards</span></div>
       </div>
     </div>
     <div class="pipe-connector"><span>→</span></div>
@@ -317,6 +345,9 @@
         <h4>OLS Regression</h4>
         <p>Multivariable ordinary least squares regression estimating the relative thermal impact of built impervious expansion versus canopy loss.</p>
         <div class="pipe-tags"><span>scikit-learn</span><span>OLS</span><span>Coefficients</span></div>
+        <h4>Spatial Attribution</h4>
+        <p>Multivariable attribution evaluating thermal impact of built impervious footprint expansion against vegetative canopy loss.</p>
+        <div class="pipe-tags"><span>Attribution</span><span>Urban Heat Island</span></div>
       </div>
     </div>
   </div>
@@ -326,21 +357,26 @@
       <div class="insight-icon">🔬</div>
       <h5>Core Finding</h5>
       <p>Built-up index (NDBI) contributes +23.5°C per unit increase — over 4× stronger than vegetative cooling (-5.7°C), demonstrating that built land expansion is the primary driver of regional heat anomalies.</p>
+      <p>Built-up index (NDBI) contributes +23.5°C per unit increase — over 4× stronger than vegetative cooling (-5.7°C), demonstrating that concrete expansion is the dominant driver of metropolitan heat anomalies.</p>
     </div>
     <div class="insight-card">
       <div class="insight-icon">⚠️</div>
       <h5>Spatial Scale Resolution</h5>
       <p>Averaging across administrative polygons smooths micro-climatic gradients. Regression models capture broad macro-level structural trends rather than localized street-level canyon heating.</p>
+      <p>Administrative polygon averaging preserves macroscopic thermal patterns while smoothing sub-ward microclimate variations.</p>
     </div>
     <div class="insight-card">
       <div class="insight-icon">🛠</div>
       <h5>System Architecture</h5>
       <p>Python 3.10+ · FastAPI · In-Memory SQLite · Leaflet.js · Chart.js · Vercel Serverless Function · Zero External API Key Dependencies.</p>
+      <h5>Zero-Cloud Architecture</h5>
+      <p>Pre-processed and embedded vector geometries running on edge serverless functions with zero external API key requirements.</p>
     </div>
     <div class="insight-card">
       <div class="insight-icon">📡</div>
       <h5>Data Sources</h5>
       <p>ESA Copernicus Sentinel-2 SR · NASA/USGS Landsat-8/9 Collection 2 Tier 1 · Survey of India &amp; Open Municipal Administrative Boundaries.</p>
+      <p>ESA Copernicus Sentinel-2 SR · NASA/USGS Landsat-8/9 Collection 2 Tier 1 · Open Municipal &amp; State Spatial Boundaries.</p>
     </div>
   </div>
 </section>
@@ -351,6 +387,7 @@
     <div class="footer-brand">
       <strong>India Urban Heat Island &amp; Climate Observatory</strong>
       <span class="footer-sub">National &amp; Municipal Surveillance · 2016–2024 · Sentinel-2 + Landsat-8/9 · FastAPI + Leaflet</span>
+      <span class="footer-sub">National &amp; Municipal Surveillance · 2016–2024 · Sentinel-2 + Landsat-8/9 · 20 Metros · 37 States</span>
     </div>
     <div class="footer-links">
       <a href="/api/docs" target="_blank">API Docs</a>

@@ -2,6 +2,7 @@
 //  India Urban Heat Island & Climate Observatory — app.js
 //  Full multi-scale geospatial surveillance system:
 //  National (37 States & UTs) · State Subdistricts · Municipal Wards
+//  National (37 States & UTs) · 20 Metros (Wards) · 37 States (Districts)
 //  60 FPS GPU-accelerated Leaflet & Chart.js engine
 // ═══════════════════════════════════════════════════════════════
 
@@ -21,6 +22,43 @@ var CITY_META = {
   rajasthan:     { name: "Rajasthan", state: "State (33 Districts)", center: [27.02, 74.21], zoom: 7 },
   west_bengal:   { name: "West Bengal", state: "State (23 Districts)", center: [22.98, 87.85], zoom: 7 },
   telangana:     { name: "Telangana", state: "State (33 Districts)", center: [18.11, 79.01], zoom: 7 },
+  india:            { name: "All India",        state: "37 States & UTs", center: [22.97, 78.65], zoom: 5 },
+  bengaluru:        { name: "Bengaluru",        state: "Karnataka",       center: [12.9716, 77.5946], zoom: 11 },
+  delhi:            { name: "Delhi NCR",        state: "Delhi",           center: [28.6139, 77.2090], zoom: 10 },
+  mumbai:           { name: "Mumbai",           state: "Maharashtra",     center: [19.0760, 72.8777], zoom: 11 },
+  hyderabad:        { name: "Hyderabad",        state: "Telangana",       center: [17.3850, 78.4867], zoom: 11 },
+  chennai:          { name: "Chennai",          state: "Tamil Nadu",      center: [13.0827, 80.2707], zoom: 11 },
+  ahmadabad:        { name: "Ahmedabad",        state: "Gujarat",         center: [23.0225, 72.5714], zoom: 11 },
+  pune:             { name: "Pune",             state: "Maharashtra",     center: [18.5204, 73.8567], zoom: 11 },
+  jaipur:           { name: "Jaipur",           state: "Rajasthan",       center: [26.9124, 75.7873], zoom: 11 },
+  surat:            { name: "Surat",            state: "Gujarat",         center: [21.1702, 72.8311], zoom: 11 },
+  lucknow:          { name: "Lucknow",          state: "Uttar Pradesh",   center: [26.8467, 80.9462], zoom: 11 },
+  kanpur:           { name: "Kanpur",           state: "Uttar Pradesh",   center: [26.4499, 80.3319], zoom: 11 },
+  bhopal:           { name: "Bhopal",           state: "Madhya Pradesh",  center: [23.2599, 77.4126], zoom: 11 },
+  indore:           { name: "Indore",           state: "Madhya Pradesh",  center: [22.7196, 75.8577], zoom: 11 },
+  nagpur:           { name: "Nagpur",           state: "Maharashtra",     center: [21.1458, 79.0882], zoom: 11 },
+  patna:            { name: "Patna",            state: "Bihar",           center: [25.5941, 85.1376], zoom: 11 },
+  visakhapatnam:    { name: "Visakhapatnam",    state: "Andhra Pradesh",  center: [17.6868, 83.2185], zoom: 11 },
+  vadodara:         { name: "Vadodara",         state: "Gujarat",         center: [22.3072, 73.1812], zoom: 11 },
+  thane:            { name: "Thane",            state: "Maharashtra",     center: [19.2183, 72.9781], zoom: 11 },
+  navi_mumbai:      { name: "Navi Mumbai",      state: "Maharashtra",     center: [19.0330, 73.0297], zoom: 11 },
+  pimpri_chinchwad: { name: "Pimpri Chinchwad", state: "Maharashtra",     center: [18.6298, 73.7997], zoom: 11 },
+  tamil_nadu:       { name: "Tamil Nadu",       state: "State (38 Districts)", center: [11.12, 78.65], zoom: 7 },
+  maharashtra:      { name: "Maharashtra",      state: "State (36 Districts)", center: [19.75, 75.71], zoom: 7 },
+  karnataka:        { name: "Karnataka",        state: "State (31 Districts)", center: [15.31, 75.71], zoom: 7 },
+  uttar_pradesh:    { name: "Uttar Pradesh",    state: "State (75 Districts)", center: [26.84, 80.94], zoom: 7 },
+  kerala:           { name: "Kerala",           state: "State (14 Districts)", center: [10.85, 76.27], zoom: 8 },
+  gujarat:          { name: "Gujarat",          state: "State (33 Districts)", center: [22.25, 71.19], zoom: 7 },
+  rajasthan:        { name: "Rajasthan",        state: "State (33 Districts)", center: [27.02, 74.21], zoom: 7 },
+  west_bengal:      { name: "West Bengal",      state: "State (23 Districts)", center: [22.98, 87.85], zoom: 7 },
+  telangana:        { name: "Telangana",        state: "State (33 Districts)", center: [18.11, 79.01], zoom: 7 },
+  andhra_pradesh:   { name: "Andhra Pradesh",   state: "State (26 Districts)", center: [15.91, 79.74], zoom: 7 },
+  madhya_pradesh:   { name: "Madhya Pradesh",   state: "State (52 Districts)", center: [22.97, 78.65], zoom: 7 },
+  bihar:            { name: "Bihar",            state: "State (38 Districts)", center: [25.09, 85.31], zoom: 7 },
+  punjab:           { name: "Punjab",           state: "State (23 Districts)", center: [31.14, 75.34], zoom: 8 },
+  haryana:          { name: "Haryana",          state: "State (22 Districts)", center: [29.05, 76.08], zoom: 8 },
+  odisha:           { name: "Odisha",           state: "State (30 Districts)", center: [20.95, 85.09], zoom: 7 },
+  assam:            { name: "Assam",            state: "State (33 Districts)", center: [26.20, 92.93], zoom: 7 },
 };
 
 // ── Application State ──────────────────────────────────────────
@@ -86,6 +124,7 @@ function initStatusCheck() {
     var txt = document.getElementById("status-text");
     if (dot) dot.className = "status-dot ok";
     if (txt) txt.textContent = "API v" + h.version + " · Live (37 States & UTs)";
+    if (txt) txt.textContent = "API v" + h.version + " · Live (58 Territories)";
   }).catch(function() {
     var dot = document.getElementById("status-dot");
     var txt = document.getElementById("status-text");
@@ -95,18 +134,40 @@ function initStatusCheck() {
 }
 
 // ── Populate State Select Dropdown ─────────────────────────────
+// ── Populate State & Metro Select Dropdown ─────────────────────
 function populateStateSelect() {
   get("/cities").then(function(cities) {
+  get("/cities").then(function(catalog) {
     var sel = document.getElementById("state-select");
     if (!sel) return;
     sel.innerHTML = '<option value="">More States &amp; UTs (37)...</option>';
     cities.forEach(function(c) {
       if (c.key === "india" || c.key === "chennai") return;
+    sel.innerHTML = '<option value="">All Cities &amp; States (58)...</option>';
+
+    var metroOptGroup = document.createElement("optgroup");
+    metroOptGroup.label = "Metropolitan Cities (20 Wards)";
+
+    var stateOptGroup = document.createElement("optgroup");
+    stateOptGroup.label = "States & Union Territories (37)";
+
+    catalog.forEach(function(c) {
+      if (c.key === "india") return;
       var opt = document.createElement("option");
       opt.value = c.key;
       opt.textContent = c.name;
       sel.appendChild(opt);
+      opt.textContent = c.name + (c.count ? " (" + c.count + ")" : "");
+
+      if (c.is_metro) {
+        metroOptGroup.appendChild(opt);
+      } else {
+        stateOptGroup.appendChild(opt);
+      }
     });
+
+    sel.appendChild(metroOptGroup);
+    sel.appendChild(stateOptGroup);
   }).catch(function(e) {
     console.warn("Cities catalog fetch failed", e);
   });
@@ -124,6 +185,7 @@ function loadHeroKPIs() {
   if (mapTitleEl) mapTitleEl.textContent = meta.name;
   if (stateEl) stateEl.textContent = state.city === "india" ? "National" : meta.name;
   if (wardsLabel) wardsLabel.textContent = state.city === "india" ? "States & UTs" : (state.city === "chennai" ? "Wards Analysed" : "Subdistricts");
+  if (stateEl) stateEl.textContent = state.city === "india" ? "National" : meta.state;
 
   get("/zones?city=" + state.city + "&year=" + state.year + "&limit=600")
     .then(function(zones) {
@@ -137,6 +199,9 @@ function loadHeroKPIs() {
       var k_avglst = document.getElementById("k-avglst");
 
       if (k_wards) k_wards.textContent = zones.length;
+      if (wardsLabel) {
+        wardsLabel.textContent = state.city === "india" ? "States & UTs" : (meta.state.includes("State") ? "Districts" : "Wards Analysed");
+      }
       if (k_maxlst) k_maxlst.textContent = max.toFixed(1) + "°";
       if (k_avglst) k_avglst.textContent = avg.toFixed(1) + "°";
     })
@@ -149,6 +214,7 @@ function loadZones() {
     var sel = document.getElementById("zone-sel");
     if (!sel) return;
     sel.innerHTML = state.city === "india" ? '<option value="">All 37 States & UTs</option>' : '<option value="">All subdistricts / wards</option>';
+    sel.innerHTML = state.city === "india" ? '<option value="">All 37 States & UTs</option>' : '<option value="">All zones / wards</option>';
     (data.zones || []).forEach(function(z) {
       var opt = document.createElement("option");
       opt.value = z;
@@ -158,6 +224,7 @@ function loadZones() {
   }).catch(function() {
     var sel = document.getElementById("zone-sel");
     if (sel) sel.innerHTML = '<option value="">All territories</option>';
+    if (sel) sel.innerHTML = '<option value="">All features</option>';
   });
 }
 
@@ -308,6 +375,7 @@ function renderZonePanel(data, zoneId) {
     if (drillBtn) {
       drillBtn.style.display = "flex";
       drillBtn.innerHTML = "<span>🔍 Explore " + zname + " Subdistricts</span>";
+      drillBtn.innerHTML = "<span>🔍 Explore " + zname + " Districts</span>";
       drillBtn.onclick = function() {
         var slug = zname.toLowerCase().replace(/ & /g, "_").replace(/ /g, "_");
         switchCity(slug);
@@ -649,6 +717,7 @@ function switchCity(cityKey) {
   if (detailEl) detailEl.style.display = "none";
 
   // Reload all views
+  // Reload views
   loadHeroKPIs();
   loadZones();
   refreshMap();

@@ -341,9 +341,21 @@ def get_regression():
 
 def get_city_list():
     items = [
-        {"key": "india", "name": "All India", "state": "37 States & UTs", "center": [22.97, 78.65], "zoom": 5, "count": 37},
-        {"key": "chennai", "name": "Chennai", "state": "Tamil Nadu", "center": [13.08, 80.27], "zoom": 11, "count": 200},
+        {"key": "india", "name": "All India", "state": "37 States & UTs", "center": [22.97, 78.65], "zoom": 5, "count": 37, "is_metro": False, "is_state": False},
     ]
+    # 1. 20 Metropolitan Cities (Municipal Wards)
+    for slug, m in cities.METRO_CITIES.items():
+        items.append({
+            "key": slug,
+            "name": m["name"],
+            "state": m["state"],
+            "center": m["center"],
+            "zoom": m["zoom"],
+            "count": len(geo.get_zone_ids(slug)),
+            "is_metro": True,
+            "is_state": False,
+        })
+    # 2. 37 States & UTs (Districts)
     for st in cities.INDIA_STATES:
         slug = cities.normalize_slug(st)
         cfg = cities.get_scope_info(slug)
@@ -353,6 +365,8 @@ def get_city_list():
             "state": "State / UT",
             "center": cfg["center"],
             "zoom": cfg["zoom"],
-            "count": 0,
+            "count": len(geo.get_zone_ids(slug)),
+            "is_metro": False,
+            "is_state": True,
         })
     return items

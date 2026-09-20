@@ -4,6 +4,9 @@ backend/cities.py
 Territorial catalog for national (All India), state-level (37 States & UTs),
 and municipal ward-level (Chennai) environmental monitoring.
 Boundary data sourced on-demand from datta07/INDIAN-SHAPEFILES.
+Territorial catalog for National (All India), Metropolitan Cities (20 Cities with Municipal Wards),
+and State-Level (37 States & UTs with Administrative Districts).
+All boundary data is embedded locally in data/geojson/.
 """
 
 # All 37 States & Union Territories of India
@@ -57,9 +60,32 @@ STATE_GEOJSON_FILES = {
     "UTTAR PRADESH": ("UTTAR PRADESH", "UTTAR PRADESH_SUBDISTRICTS.geojson"),
     "UTTARAKHAND": ("UTTARAKHAND", "UTTARAKHAND_SUBDISTRICTS.geojson"),
     "WEST BENGAL": ("WEST BENGAL", "WEST BENGAL_SUBDISTRICTS.geojson"),
+# Top 20 Indian Metropolitan Cities with actual municipal ward GeoJSONs embedded
+METRO_CITIES = {
+    "bengaluru":        {"name": "Bengaluru",        "state": "Karnataka",      "center": [12.9716, 77.5946], "zoom": 11, "type": "BBMP Municipal Wards"},
+    "delhi":            {"name": "Delhi NCR",        "state": "Delhi",          "center": [28.6139, 77.2090], "zoom": 10, "type": "MCD Municipal Wards"},
+    "mumbai":           {"name": "Mumbai",           "state": "Maharashtra",    "center": [19.0760, 72.8777], "zoom": 11, "type": "BMC Administrative Wards"},
+    "hyderabad":        {"name": "Hyderabad",        "state": "Telangana",      "center": [17.3850, 78.4867], "zoom": 11, "type": "GHMC Municipal Wards"},
+    "chennai":          {"name": "Chennai",          "state": "Tamil Nadu",     "center": [13.0827, 80.2707], "zoom": 11, "type": "GCC Municipal Wards"},
+    "ahmadabad":        {"name": "Ahmedabad",        "state": "Gujarat",        "center": [23.0225, 72.5714], "zoom": 11, "type": "AMC Municipal Wards"},
+    "pune":             {"name": "Pune",             "state": "Maharashtra",    "center": [18.5204, 73.8567], "zoom": 11, "type": "PMC Municipal Wards"},
+    "jaipur":           {"name": "Jaipur",           "state": "Rajasthan",      "center": [26.9124, 75.7873], "zoom": 11, "type": "JMC Municipal Wards"},
+    "surat":            {"name": "Surat",            "state": "Gujarat",        "center": [21.1702, 72.8311], "zoom": 11, "type": "SMC Municipal Wards"},
+    "lucknow":          {"name": "Lucknow",          "state": "Uttar Pradesh",  "center": [26.8467, 80.9462], "zoom": 11, "type": "LMC Municipal Wards"},
+    "kanpur":           {"name": "Kanpur",           "state": "Uttar Pradesh",  "center": [26.4499, 80.3319], "zoom": 11, "type": "KMC Municipal Wards"},
+    "bhopal":           {"name": "Bhopal",           "state": "Madhya Pradesh", "center": [23.2599, 77.4126], "zoom": 11, "type": "BMC Municipal Wards"},
+    "indore":           {"name": "Indore",           "state": "Madhya Pradesh", "center": [22.7196, 75.8577], "zoom": 11, "type": "IMC Municipal Wards"},
+    "nagpur":           {"name": "Nagpur",           "state": "Maharashtra",    "center": [21.1458, 79.0882], "zoom": 11, "type": "NMC Municipal Wards"},
+    "patna":            {"name": "Patna",            "state": "Bihar",          "center": [25.5941, 85.1376], "zoom": 11, "type": "PMC Municipal Wards"},
+    "visakhapatnam":    {"name": "Visakhapatnam",    "state": "Andhra Pradesh", "center": [17.6868, 83.2185], "zoom": 11, "type": "GVMC Municipal Wards"},
+    "vadodara":         {"name": "Vadodara",         "state": "Gujarat",        "center": [22.3072, 73.1812], "zoom": 11, "type": "VMC Municipal Wards"},
+    "thane":            {"name": "Thane",            "state": "Maharashtra",    "center": [19.2183, 72.9781], "zoom": 11, "type": "TMC Municipal Wards"},
+    "navi_mumbai":      {"name": "Navi Mumbai",      "state": "Maharashtra",    "center": [19.0330, 73.0297], "zoom": 11, "type": "NMMC Municipal Wards"},
+    "pimpri_chinchwad": {"name": "Pimpri Chinchwad", "state": "Maharashtra",    "center": [18.6298, 73.7997], "zoom": 11, "type": "PCMC Municipal Wards"},
 }
 
 # Scientific regional climate baselines for all 37 Indian States
+# Regional climate baselines for all 37 Indian States
 STATE_CLIMATES = {
     "RAJASTHAN": {"lst": 43.4, "ndvi": 0.09, "ndbi": 0.14, "rain": 450, "spread": 4.6},
     "GUJARAT": {"lst": 42.1, "ndvi": 0.12, "ndbi": 0.12, "rain": 750, "spread": 4.2},
@@ -146,7 +172,12 @@ METRO_ALIASES = {
     "mumbai": "maharashtra",
     "bengaluru": "karnataka",
     "hyderabad": "telangana",
+# Aliases
+ALIASES = {
+    "ahmedabad": "ahmadabad",
+    "odisha": "orissa",
     "kolkata": "west_bengal",
+    "bangalore": "bengaluru",
 }
 
 YEARS = list(range(2016, 2025))
@@ -158,6 +189,7 @@ def normalize_slug(s):
         return "india"
     clean = s.strip().lower().replace("-", "_").replace(" ", "_")
     return METRO_ALIASES.get(clean, clean)
+    return ALIASES.get(clean, clean)
 
 
 def get_state_from_slug(slug):
@@ -166,13 +198,17 @@ def get_state_from_slug(slug):
     for st in INDIA_STATES:
         if st.lower().replace("-", "_").replace(" ", "_") == norm:
             return st
+    if norm == "orissa":
+        return "ODISHA"
     return None
 
 
 def get_scope_info(scope_key):
     """Resolve complete scope configuration for national, municipal, or state level."""
+    """Resolve complete territorial configuration for national, metropolitan, or state scope."""
     slug = normalize_slug(scope_key)
 
+    # 1. National
     if slug == "india":
         return {
             "key": "india",
@@ -181,24 +217,43 @@ def get_scope_info(scope_key):
             "center": [22.97, 78.65],
             "zoom": 5,
             "is_national": True,
+            "is_metro": False,
             "use_local_wards": False,
             "geojson_url": "https://raw.githubusercontent.com/datta07/INDIAN-SHAPEFILES/master/INDIA/INDIA_STATES.geojson",
             "baseline": {"lst": 36.5, "ndvi": 0.22, "ndbi": 0.08, "rainfall": 1250, "spread": 5.0},
         }
 
     if slug == "chennai":
+    # 2. Metropolitan City (Wards)
+    if slug in METRO_CITIES:
+        m = METRO_CITIES[slug]
+        st_clim = STATE_CLIMATES.get(m["state"].upper(), {"lst": 38.0, "ndvi": 0.16, "ndbi": 0.10, "rain": 1100, "spread": 4.0})
         return {
             "key": "chennai",
             "name": "Chennai",
             "state": "Tamil Nadu",
             "center": [13.08, 80.27],
             "zoom": 11,
+            "key": slug,
+            "name": m["name"],
+            "state": m["state"],
+            "center": m["center"],
+            "zoom": m["zoom"],
             "is_national": False,
+            "is_metro": True,
             "use_local_wards": True,
             "geojson_url": None,
             "baseline": {"lst": 39.4, "ndvi": 0.18, "ndbi": 0.06, "rainfall": 1400, "spread": 4.3},
+            "baseline": {
+                "lst": st_clim["lst"] + 0.8,
+                "ndvi": max(0.08, st_clim["ndvi"] - 0.04),
+                "ndbi": st_clim["ndbi"] + 0.04,
+                "rainfall": st_clim["rain"],
+                "spread": st_clim.get("spread", 4.0),
+            },
         }
 
+    # 3. State Scope (Districts)
     st_name = get_state_from_slug(slug)
     if not st_name:
         # Fallback to India if unknown
@@ -220,6 +275,7 @@ def get_scope_info(scope_key):
         "center": center,
         "zoom": zoom,
         "is_national": False,
+        "is_metro": False,
         "use_local_wards": False,
         "geojson_url": url,
         "baseline": {

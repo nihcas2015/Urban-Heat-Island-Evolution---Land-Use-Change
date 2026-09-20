@@ -55,6 +55,8 @@ class CityInfo(BaseModel):
     center: List[float]
     zoom: int
     count: int
+    is_metro: Optional[bool] = False
+    is_state: Optional[bool] = False
 
 
 class ZoneSummary(BaseModel):
