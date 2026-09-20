@@ -234,14 +234,14 @@
   // ── Leaflet Dark Map Initialization ───────────────────────────
   function initLeafletMap() {
     appState.map = L.map("spatial-map", {
-      center: [22.97, 78.65],
+      center: [22.8, 79.2],
       zoom: 5,
       zoomControl: true,
       preferCanvas: true
     });
 
-    // Sleek CartoDB Dark tiles (Zero API key dependency)
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+    // CartoDB Dark Matter Base Layer (Clean unlabelled dark canvas)
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png", {
       attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://openstreetmap.org">OSM</a>',
       subdomains: "abcd",
       maxZoom: 19
@@ -487,10 +487,10 @@
 
         return {
           fillColor: fillColor,
-          weight: 1,
-          opacity: 0.75,
-          color: "rgba(255, 255, 255, 0.18)",
-          fillOpacity: 0.72
+          weight: appState.scope === "india" ? 1.3 : 1.0,
+          opacity: 0.9,
+          color: appState.scope === "india" ? "rgba(255, 255, 255, 0.45)" : "rgba(255, 255, 255, 0.25)",
+          fillOpacity: 0.82
         };
       },
       onEachFeature: function(feat, layer) {
@@ -514,8 +514,8 @@
             var l = e.target;
             l.setStyle({
               weight: 2.5,
-              color: "#ffffff",
-              fillOpacity: 0.88
+              color: "#f97316",
+              fillOpacity: 0.92
             });
             if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
               l.bringToFront();
@@ -531,15 +531,22 @@
       }
     }).addTo(appState.map);
 
-    // Smoothly fly to bounding box
-    try {
-      var bounds = appState.geojsonLayer.getBounds();
-      if (bounds.isValid()) {
-        appState.map.flyToBounds(bounds, { padding: [25, 25], duration: 0.8 });
-      }
-    } catch (e) {
-      if (meta.center && meta.zoom) {
-        appState.map.setView(meta.center, meta.zoom);
+    // Center properly based on territorial scope
+    if (appState.scope === "india") {
+      var mapEl = document.getElementById("spatial-map");
+      var mapW = mapEl ? mapEl.clientWidth : window.innerWidth;
+      var initZoom = mapW < 900 ? 4 : 5;
+      appState.map.flyTo([22.8, 79.5], initZoom, { duration: 0.8 });
+    } else {
+      try {
+        var bounds = appState.geojsonLayer.getBounds();
+        if (bounds.isValid()) {
+          appState.map.flyToBounds(bounds, { padding: [30, 30], duration: 0.8 });
+        }
+      } catch (e) {
+        if (meta.center && meta.zoom) {
+          appState.map.setView(meta.center, meta.zoom);
+        }
       }
     }
 
