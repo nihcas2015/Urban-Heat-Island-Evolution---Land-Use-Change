@@ -19,12 +19,12 @@ from backend import db, geo, cities
 
 # ── App ────────────────────────────────────────────────────────
 app = FastAPI(
-    title="India Urban Heat Island & Climate Observatory",
+    title="THERMALIS — National Urban Heat & Climate Observatory",
     description=(
         "Full-stack geospatial REST API for national, state, and metropolitan Urban Heat Island monitoring. "
         "National Scope: All 37 Indian States & Union Territories. "
-        "Municipal Scope: Chennai (200 wards), Delhi NCR, Mumbai, Bengaluru, Hyderabad, Kolkata. "
-        "State Scope: District-level coverage across all Indian States."
+        "Municipal Scope: 20 Metropolitan Cities with Municipal Ward Geometries. "
+        "State Scope: District-level coverage across all 37 Indian States and Union Territories."
     ),
     version="2.2.0",
     docs_url="/api/docs",

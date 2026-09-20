@@ -2,7 +2,7 @@
 backend/geo.py
 --------------
 Embedded vector boundary loader and choropleth builder.
-All boundary data is embedded locally in data/geojson/ for instant loading:
+All boundary data is embedded locally in public/data/geojson/ for instant loading:
 - National: 37 States & Union Territories
 - Metropolitan Cities: 20 major Indian cities with actual municipal wards
 - States: 37 States with administrative districts
@@ -13,7 +13,10 @@ import os
 from backend.cities import get_scope_info
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
-GEOJSON_DIR = os.path.join(DATA_DIR, "geojson")
+PUBLIC_DIR = os.path.join(os.path.dirname(__file__), "..", "public")
+GEOJSON_DIR = os.path.join(PUBLIC_DIR, "data", "geojson")
+if not os.path.exists(GEOJSON_DIR):
+    GEOJSON_DIR = os.path.join(DATA_DIR, "geojson")
 
 # In-memory GeoJSON cache
 _geom_cache = {}

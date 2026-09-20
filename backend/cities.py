@@ -3,7 +3,7 @@ backend/cities.py
 -----------------
 Territorial catalog for National (All India), Metropolitan Cities (20 Cities with Municipal Wards),
 and State-Level (37 States & UTs with Administrative Districts).
-All boundary data is embedded locally in data/geojson/.
+All boundary data is embedded locally in public/data/geojson/.
 """
 
 # All 37 States & Union Territories of India

@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/index.py": {
-      "includeFiles": "{backend/**,data/**}",
+      "includeFiles": "{backend/**,data/**,public/data/**}",
       "maxDuration": 15
     }
   },
