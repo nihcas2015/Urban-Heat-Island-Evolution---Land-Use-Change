@@ -3,14 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>India Urban Heat Island Observatory</title>
-  <meta name="description" content="National &amp; Municipal Urban Heat Island Observatory for India — 2016 to 2024 longitudinal analysis using Sentinel-2 &amp; Landsat-8/9." />
-  <meta property="og:title" content="India Urban Heat Island Observatory" />
-  <meta property="og:description" content="Interactive geospatial surveillance of land surface temperature and land-use change across All India, 37 States/UTs, subdistricts, and municipal wards." />
-  <meta property="og:description" content="Interactive geospatial surveillance of land surface temperature and land-use change across All India, 37 States/UTs, and 20 Metropolitan Cities." />
+  <title>THERMALIS — National Urban Heat &amp; Climate Observatory</title>
+  <meta name="description" content="High-resolution longitudinal Urban Heat Island surveillance across All India, 37 States &amp; Union Territories, and 20 Metropolitan Municipal Corporations." />
+  <meta property="og:title" content="THERMALIS — National Urban Heat Observatory" />
+  <meta property="og:description" content="Deep spatial microclimate and thermal risk intelligence powered by Sentinel-2 and Landsat-8/9 remote sensing." />
+
+  <!-- Favicon (Minimalist Thermal Aperture Mark) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23000'/%3E%3Ccircle cx='16' cy='16' r='10' stroke='%23f97316' stroke-width='1.5' fill='none' stroke-dasharray='3 2'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23f97316' opacity='0.3'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='%23f97316'/%3E%3C/svg%3E" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -18,381 +20,305 @@
 </head>
 <body>
 
-<!-- NAVBAR -->
-<header class="navbar" id="navbar">
-  <div class="nav-inner">
-    <a class="nav-brand" href="#">
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-        <circle cx="14" cy="14" r="12" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4 2"/>
-        <circle cx="14" cy="14" r="6" fill="var(--accent)" opacity="0.2"/>
-        <circle cx="14" cy="14" r="2.5" fill="var(--accent)"/>
-        <line x1="14" y1="2" x2="14" y2="7" stroke="var(--accent)" stroke-width="1.5"/>
-        <line x1="14" y1="21" x2="14" y2="26" stroke="var(--accent)" stroke-width="1.5"/>
-        <line x1="2" y1="14" x2="7" y2="14" stroke="var(--accent)" stroke-width="1.5"/>
-        <line x1="21" y1="14" x2="26" y2="14" stroke="var(--accent)" stroke-width="1.5"/>
-      </svg>
+<!-- Ambient Kinetic Background Canvas (Interactive Cursor Reactive) -->
+<canvas id="kinetic-bg"></canvas>
+
+<!-- Top Navigation -->
+<header class="header">
+  <div class="header-inner">
+    <!-- Brand -->
+    <a href="#" class="brand" id="brand-home">
+      <div class="brand-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2"/>
+          <circle cx="12" cy="12" r="6" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+          <circle cx="12" cy="12" r="2.5" fill="currentColor"/>
+          <line x1="12" y1="0" x2="12" y2="4" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="12" y1="20" x2="12" y2="24" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="0" y1="12" x2="4" y2="12" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="20" y1="12" x2="24" y2="12" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+      </div>
       <div>
-        <span class="brand-name">India UHI Observatory</span>
-        <span class="brand-sub">v2.2 · National &amp; Municipal Surveillance</span>
-        <span class="brand-sub">National &amp; Municipal Geospatial Intelligence</span>
+        <span class="brand-title">THERMALIS</span>
+        <span class="brand-subtitle">National Climate Intelligence</span>
       </div>
     </a>
 
-    <!-- Territory Switcher -->
-    <div class="city-switcher" id="city-switcher">
-      <button class="city-btn active" data-city="india">All India</button>
-      <button class="city-btn" data-city="bengaluru">Bengaluru</button>
-      <button class="city-btn" data-city="delhi">Delhi</button>
-      <button class="city-btn" data-city="mumbai">Mumbai</button>
-      <button class="city-btn" data-city="hyderabad">Hyderabad</button>
-      <button class="city-btn" data-city="chennai">Chennai</button>
-      <button class="city-btn" data-city="ahmadabad">Ahmedabad</button>
-      <button class="city-btn" data-city="pune">Pune</button>
-      <button class="city-btn" data-city="jaipur">Jaipur</button>
-      <button class="city-btn" data-city="tamil_nadu">Tamil Nadu</button>
-      <button class="city-btn" data-city="maharashtra">Maharashtra</button>
-      <button class="city-btn" data-city="karnataka">Karnataka</button>
-      <button class="city-btn" data-city="delhi">Delhi NCR</button>
-      <button class="city-btn" data-city="uttar_pradesh">Uttar Pradesh</button>
-      <button class="city-btn" data-city="gujarat">Gujarat</button>
-      <button class="city-btn" data-city="west_bengal">West Bengal</button>
-      <button class="city-btn" data-city="chennai">Chennai (Wards)</button>
-      <select class="switcher-select" id="state-select" aria-label="Select State or Territory">
-        <option value="">More States &amp; UTs (37)...</option>
-      <select class="switcher-select" id="state-select" aria-label="Select City or State">
-        <option value="">All Cities &amp; States (58)...</option>
-      </select>
+    <!-- Hierarchical Breadcrumb Navigator -->
+    <nav class="breadcrumb-bar" id="breadcrumb-bar">
+      <button class="bc-node active" id="bc-root" data-scope="india">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span>All India</span>
+      </button>
+      <span class="bc-sep" id="bc-sep-1" style="display:none">/</span>
+      <button class="bc-node" id="bc-state" style="display:none"></button>
+      <span class="bc-sep" id="bc-sep-2" style="display:none">/</span>
+      <button class="bc-node" id="bc-city" style="display:none"></button>
+    </nav>
+
+    <!-- Territory Selector Modal Trigger -->
+    <div class="territory-trigger-wrap">
+      <button class="territory-btn" id="territory-modal-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span id="current-territory-label">Switch Territory</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+
+      <!-- Dropdown Panel -->
+      <div class="territory-dropdown" id="territory-dropdown" style="display:none">
+        <div class="td-search-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="td-search-input" placeholder="Search 20 metros or 37 states…" autocomplete="off" />
+        </div>
+        <div class="td-list" id="td-list"></div>
+      </div>
     </div>
 
-    <nav class="nav-links">
-      <a href="#overview" class="nav-link">Overview</a>
-      <a href="#map-section" class="nav-link">Map</a>
-      <a href="#analytics" class="nav-link">Analytics</a>
-      <a href="#methodology" class="nav-link">Methods</a>
-    </nav>
-    <div class="nav-status">
-      <span class="status-dot" id="status-dot"></span>
-      <span class="status-text" id="status-text">Connecting…</span>
+    <!-- Header Actions -->
+    <div class="header-meta">
+      <div class="status-indicator">
+        <span class="pulse-dot"></span>
+        <span class="status-label" id="status-label">Operational</span>
+      </div>
     </div>
   </div>
 </header>
 
-<!-- HERO / OVERVIEW -->
-<section id="overview" class="hero">
-  <div class="hero-grid-bg"></div>
-  <div class="hero-content">
-    <div class="hero-eyebrow">
-      <span class="chip chip-geo">🛰 Sentinel-2 &amp; Landsat-8/9</span>
-      <span class="chip chip-seq">📈 Sequential Spatial Mining</span>
-      <span class="chip chip-live">⚡ 37 States &amp; UTs Dynamic</span>
-      <span class="chip chip-seq">📈 20 Metros &amp; 37 States</span>
-      <span class="chip chip-live">⚡ Instant Embedded GeoJSON</span>
+<!-- Main Workspace -->
+<main class="main-container">
+
+  <!-- Overview Strip -->
+  <section class="overview-strip">
+    <div class="scope-identity">
+      <div class="scope-tags">
+        <span class="scope-pill" id="scope-type-pill">National Overview</span>
+        <span class="scope-pill scope-time">2016 – 2024 Remote Sensing Panel</span>
+      </div>
+      <h1 class="scope-title" id="scope-heading">All India Thermal Surveillance</h1>
+      <p class="scope-caption" id="scope-description">
+        Multi-decadal satellite thermal emission (Landsat-8/9 TIRS) and vegetation dynamics (Sentinel-2 MSI) resolved across 37 States, Union Territories, and municipal administrative divisions.
+      </p>
     </div>
-    <h1 class="hero-title">
-      Urban Heat Island<br/>
-      <span class="gradient-text" id="hero-city-name">Evolution across All India</span>
-    </h1>
-    <p class="hero-desc" id="hero-desc">
-      Longitudinal multi-scale analysis of Land Surface Temperature (LST), vegetation index (NDVI), and built-up index (NDBI) across all 37 Indian States, Union Territories, subdistricts, and municipal wards from 2016 to 2024.
-      Longitudinal multi-scale surveillance of Land Surface Temperature (LST), vegetation cover (NDVI), and built-up expansion (NDBI) across all 37 Indian States, Union Territories, and 20 major metropolitan cities from 2016 to 2024.
-    </p>
-    <div class="kpi-strip" id="hero-kpis">
-      <div class="kpi-item"><span class="kpi-v" id="k-wards">37</span><span class="kpi-l" id="k-wards-l">States &amp; UTs</span></div>
-      <div class="kpi-sep"></div>
-      <div class="kpi-item"><span class="kpi-v" id="k-span">9 yrs</span><span class="kpi-l">2016 → 2024</span></div>
-      <div class="kpi-sep"></div>
-      <div class="kpi-item"><span class="kpi-v" id="k-maxlst">–</span><span class="kpi-l">Peak LST (°C)</span></div>
-      <div class="kpi-sep"></div>
-      <div class="kpi-item"><span class="kpi-v" id="k-avglst">–</span><span class="kpi-l">Mean LST (°C)</span></div>
-      <div class="kpi-sep"></div>
-      <div class="kpi-item"><span class="kpi-v" id="k-state">National</span><span class="kpi-l">Territory</span></div>
+
+    <!-- 4 Key Telemetry Metrics -->
+    <div class="telemetry-grid">
+      <div class="tele-card">
+        <span class="tele-val" id="tele-zones">37</span>
+        <span class="tele-lbl" id="tele-zones-lbl">Active Units</span>
+      </div>
+      <div class="tele-card">
+        <span class="tele-val highlight-hot" id="tele-peak-lst">–</span>
+        <span class="tele-lbl">Peak LST (°C)</span>
+      </div>
+      <div class="tele-card">
+        <span class="tele-val" id="tele-mean-lst">–</span>
+        <span class="tele-lbl">Mean LST (°C)</span>
+      </div>
+      <div class="tele-card">
+        <span class="tele-val highlight-green" id="tele-mean-ndvi">–</span>
+        <span class="tele-lbl">Mean NDVI</span>
+      </div>
     </div>
-    <a href="#map-section" class="cta-btn">
-      Open Spatial Explorer
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </a>
-  </div>
-</section>
+  </section>
 
-<!-- MAP SECTION -->
-<section id="map-section" class="section">
-  <div class="section-label">Spatial Explorer</div>
-  <h2 class="section-title"><span id="map-city-title">All India</span> — Thermal Risk Map</h2>
-  <p class="section-desc">Select an indicator and observation year. Click any territory to inspect its 9-year longitudinal trend or drill down to subdistricts.</p>
-  <p class="section-desc">Select an environmental indicator and year. Click any ward or district to inspect its longitudinal trend in the inspection panel.</p>
+  <!-- Spatial Interactive Workspace -->
+  <section class="spatial-workspace">
 
-  <div class="workspace">
-    <!-- Left Controls -->
-    <aside class="sidebar-left">
-      <div class="control-block">
-        <div class="control-title">Indicator</div>
-        <div class="pill-group" id="ind-group">
-          <button class="pill active" data-ind="lst">LST (°C)</button>
-          <button class="pill" data-ind="ndvi">NDVI</button>
-          <button class="pill" data-ind="ndbi">NDBI</button>
-          <button class="pill" data-ind="rainfall">Rainfall</button>
+    <!-- Left Controls Panel -->
+    <aside class="control-panel">
+      <!-- Indicator Selector -->
+      <div class="panel-section">
+        <label class="panel-label">Environmental Indicator</label>
+        <div class="indicator-matrix" id="indicator-selector">
+          <button class="ind-card active" data-ind="lst">
+            <span class="ind-name">LST</span>
+            <span class="ind-sub">Surface Heat (°C)</span>
+          </button>
+          <button class="ind-card" data-ind="ndvi">
+            <span class="ind-name">NDVI</span>
+            <span class="ind-sub">Vegetation Cover</span>
+          </button>
+          <button class="ind-card" data-ind="ndbi">
+            <span class="ind-name">NDBI</span>
+            <span class="ind-sub">Built Expansion</span>
+          </button>
+          <button class="ind-card" data-ind="rainfall">
+            <span class="ind-name">Precipitation</span>
+            <span class="ind-sub">Annual Total (mm)</span>
+          </button>
         </div>
       </div>
 
-      <div class="control-block">
-        <div class="control-title">Year <span class="year-badge" id="year-badge">2024</span></div>
-        <div class="year-slider-wrap">
-          <span class="year-end">2016</span>
-          <input type="range" id="year-slider" min="2016" max="2024" value="2024" step="1" />
-          <span class="year-end">2024</span>
+      <!-- Year Slider with Ticks -->
+      <div class="panel-section">
+        <div class="panel-header-row">
+          <label class="panel-label">Observation Year</label>
+          <span class="year-readout" id="year-readout">2024</span>
         </div>
-        <div class="year-ticks">
-          <span>2016</span><span>2018</span><span>2020</span><span>2022</span><span>2024</span>
-        </div>
-      </div>
-
-      <div class="control-block">
-        <div class="control-title">Territory / Zone</div>
-        <select class="sel" id="zone-sel">
-          <option value="">All zones</option>
-        </select>
-      </div>
-
-      <div class="control-block">
-        <div class="control-title">Search Unit</div>
-        <div class="search-wrap">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="var(--text-muted)" stroke-width="1.2"/><path d="M10 10l2 2" stroke="var(--text-muted)" stroke-width="1.2" stroke-linecap="round"/></svg>
-          <input class="search-inp" id="ward-search" type="text" placeholder="State, district, or ward…" />
-          <input class="search-inp" id="ward-search" type="text" placeholder="Ward or district name…" />
-        </div>
-      </div>
-
-      <div class="legend-block" id="legend-block">
-        <div class="legend-label" id="legend-label">LST (°C)</div>
-        <div class="legend-bar" id="legend-bar"></div>
-        <div class="legend-range">
-          <span id="leg-lo">–</span><span id="leg-hi">–</span>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Map Canvas -->
-    <div id="map"></div>
-
-    <!-- Right Detail Panel -->
-    <aside class="sidebar-right" id="ward-panel">
-      <div class="empty-panel" id="empty-panel">
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" opacity="0.3">
-          <circle cx="24" cy="24" r="20" stroke="var(--text)" stroke-width="1.5"/>
-          <path d="M16 24h16M24 16v16" stroke="var(--text)" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-        <p>Click any territory on the map</p>
-        <p class="empty-sub">or use the search bar to inspect local trends</p>
-        <p>Click any feature on the map</p>
-        <p class="empty-sub">or search by name to inspect local indicators</p>
-      </div>
-      <div class="ward-detail" id="ward-detail" style="display:none">
-        <div class="wd-header">
-          <div>
-            <div class="wd-title" id="wd-title">–</div>
-            <div class="wd-zone" id="wd-zone">–</div>
+        <div class="slider-wrapper">
+          <input type="range" id="temporal-slider" min="2016" max="2024" value="2024" step="1" />
+          <div class="slider-track-ticks">
+            <span>2016</span><span>2018</span><span>2020</span><span>2022</span><span>2024</span>
           </div>
-          <div class="trend-badge" id="wd-trend">–</div>
         </div>
+      </div>
 
-        <button class="drilldown-btn" id="wd-drilldown-btn" style="display:none"></button>
-        <button class="back-national-btn" id="back-national-btn" style="display:none">← Return to All India</button>
+      <!-- Fast Zone Search -->
+      <div class="panel-section">
+        <label class="panel-label">Filter Administrative Unit</label>
+        <div class="input-icon-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="zone-filter-input" placeholder="Search ward or district…" />
+        </div>
+      </div>
 
-        <div class="wd-kpis" id="wd-kpis"></div>
-        <div class="wd-chart-title">Land Surface Temperature 2016–2024</div>
-        <div class="wd-chart-title">Longitudinal Trend 2016–2024</div>
-        <div class="wd-chart-wrap"><canvas id="ward-chart"></canvas></div>
-        <div class="wd-meta" id="wd-meta"></div>
-        <div class="wd-stat-row" id="wd-stat-row"></div>
+      <!-- Dynamic Choropleth Legend -->
+      <div class="panel-section legend-section">
+        <div class="panel-header-row">
+          <span class="panel-label" id="legend-metric-title">LST Gradient (°C)</span>
+          <span class="legend-scale-vals"><span id="legend-min">–</span> &rarr; <span id="legend-max">–</span></span>
+        </div>
+        <div class="choropleth-spectrum" id="choropleth-spectrum"></div>
       </div>
     </aside>
-  </div>
-</section>
 
-<!-- ANALYTICS -->
-<section id="analytics" class="section section-alt">
-  <div class="section-label">Analytics</div>
-  <h2 class="section-title">Observatory Insights</h2>
-  <p class="section-desc">Aggregated time-series, spatial comparisons, driver regression models, and thermal rankings.</p>
-  <h2 class="section-title">Longitudinal &amp; Risk Intelligence</h2>
-  <p class="section-desc">Multi-year trajectory evolution and priority zone rankings across the active territory.</p>
+    <!-- Center Map Canvas -->
+    <div class="map-viewport">
+      <div id="spatial-map"></div>
 
-  <div class="analytics-layout">
-    <!-- Trend Chart -->
-    <div class="chart-tile tile-wide">
-      <div class="tile-header">
+      <!-- Quick Drilldown Floating Pill (Appears when state has an embedded metropolitan city) -->
+      <div class="metro-callout" id="metro-callout" style="display:none">
+        <div class="mc-content">
+          <div class="mc-title" id="mc-title">Metropolitan Wards Available</div>
+          <div class="mc-desc" id="mc-desc">Detailed ward-level geometries are embedded for this region.</div>
+        </div>
+        <button class="mc-btn" id="mc-action-btn">Inspect Wards</button>
+      </div>
+
+      <!-- Map Reset / Back Floating Button -->
+      <button class="map-recenter-btn" id="map-recenter-btn" style="display:none">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        <span id="map-recenter-text">Return to All India</span>
+      </button>
+    </div>
+
+    <!-- Right Zone Telemetry Panel -->
+    <aside class="detail-sidebar" id="detail-sidebar">
+      <div class="sidebar-empty" id="sidebar-empty">
+        <div class="empty-reticle">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="0" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="24"/><line x1="0" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="24" y2="12"/></svg>
+        </div>
+        <div class="empty-msg">Select a zone on the map</div>
+        <div class="empty-hint">Click any state, district, or ward polygon to inspect longitudinal heat parameters.</div>
+      </div>
+
+      <!-- Populated Panel -->
+      <div class="sidebar-data" id="sidebar-data" style="display:none">
+        <div class="sd-head">
+          <div>
+            <h3 class="sd-title" id="sd-zone-name">–</h3>
+            <span class="sd-subtitle" id="sd-zone-parent">–</span>
+          </div>
+          <span class="trend-chip" id="sd-trend-chip">Stable</span>
+        </div>
+
+        <!-- Drill Down Action Button inside Panel -->
+        <button class="panel-drill-action" id="panel-drill-action" style="display:none"></button>
+
+        <!-- KPI Grid -->
+        <div class="sd-kpi-grid">
+          <div class="sd-kpi-tile">
+            <span class="sd-kpi-num" id="sd-val-lst">–</span>
+            <span class="sd-kpi-lbl">LST Surface Temp</span>
+          </div>
+          <div class="sd-kpi-tile">
+            <span class="sd-kpi-num" id="sd-val-ndvi">–</span>
+            <span class="sd-kpi-lbl">NDVI Canopy</span>
+          </div>
+          <div class="sd-kpi-tile">
+            <span class="sd-kpi-num" id="sd-val-ndbi">–</span>
+            <span class="sd-kpi-lbl">NDBI Impervious</span>
+          </div>
+          <div class="sd-kpi-tile">
+            <span class="sd-kpi-num" id="sd-val-rain">–</span>
+            <span class="sd-kpi-lbl">Annual Rainfall</span>
+          </div>
+        </div>
+
+        <!-- Longitudinal Sparkline -->
+        <div class="sd-chart-block">
+          <div class="sd-chart-header">
+            <span class="panel-label">Thermal Trajectory (2016–2024)</span>
+          </div>
+          <div class="sd-canvas-wrap">
+            <canvas id="zone-sparkline"></canvas>
+          </div>
+        </div>
+
+        <!-- Trend Attribution Details -->
+        <div class="sd-meta-row" id="sd-meta-row"></div>
+      </div>
+    </aside>
+
+  </section>
+
+  <!-- Focused Analytics (High-Impact Only, Zero Bland Filler) -->
+  <section class="analytics-deck">
+
+    <!-- Longitudinal Trend Evolution -->
+    <div class="deck-card card-full">
+      <div class="card-top">
         <div>
-          <div class="tile-title">Territorial Indicator Trend</div>
-          <div class="tile-sub">Longitudinal evolution 2016–2024</div>
-          <div class="tile-title">Territory Indicator Trajectory</div>
-          <div class="tile-sub">Annual average across all administrative features (2016–2024)</div>
+          <div class="card-caption">Longitudinal Trajectory</div>
+          <h3 class="card-title">Thermal Evolution &amp; Regional Attenuation</h3>
+          <p class="card-desc">Annual indicator trajectories aggregated across the active territorial scope from 2016 to 2024.</p>
         </div>
-        <div class="tab-group" id="trend-tabs">
-          <button class="tab active" data-metric="lst">LST</button>
-          <button class="tab" data-metric="ndvi">NDVI</button>
-          <button class="tab" data-metric="ndbi">NDBI</button>
-          <button class="tab" data-metric="rainfall">Rainfall</button>
+        <div class="card-metric-switch" id="trend-metric-switch">
+          <button class="cms-btn active" data-metric="lst">LST</button>
+          <button class="cms-btn" data-metric="ndvi">NDVI</button>
+          <button class="cms-btn" data-metric="ndbi">NDBI</button>
+          <button class="cms-btn" data-metric="rainfall">Rainfall</button>
         </div>
       </div>
-      <canvas id="trend-chart"></canvas>
+      <div class="chart-container">
+        <canvas id="territory-trend-chart"></canvas>
+      </div>
     </div>
 
-    <!-- Zone Comparison -->
-    <div class="chart-tile">
-      <div class="tile-header">
+    <!-- Thermal Risk Rankings -->
+    <div class="deck-card card-full">
+      <div class="card-top">
         <div>
-          <div class="tile-title">Spatial Comparison</div>
-          <div class="tile-sub">Average LST across administrative units (2024)</div>
+          <div class="card-caption">Spatial Prioritization</div>
+          <h3 class="card-title">Regional Priority Rankings</h3>
+          <p class="card-desc">Zonal features ranked by thermal intensity and land cover vulnerability.</p>
+        </div>
+        <div class="card-metric-switch" id="rank-metric-switch">
+          <button class="cms-btn active" data-rmetric="lst">Highest LST</button>
+          <button class="cms-btn" data-rmetric="ndvi">Dense Canopy</button>
+          <button class="cms-btn" data-rmetric="ndbi">Impervious Built</button>
         </div>
       </div>
-      <canvas id="zone-chart"></canvas>
-    </div>
-
-    <!-- Distribution -->
-    <div class="chart-tile">
-      <div class="tile-header">
-        <div>
-          <div class="tile-title">LST Distribution</div>
-          <div class="tile-sub">Histogram across all active spatial features — 2024</div>
-        </div>
-      </div>
-      <canvas id="dist-chart"></canvas>
-    </div>
-
-    <!-- Regression -->
-    <div class="chart-tile tile-reg">
-      <div class="tile-header">
-        <div>
-          <div class="tile-title">Multivariable Regression</div>
-          <div class="tile-sub">LST ~ NDVI + NDBI + Rainfall</div>
-        </div>
-      </div>
-      <div id="reg-panel"></div>
-    </div>
-
-    <!-- Rankings -->
-    <!-- Rankings Chart -->
-    <div class="chart-tile tile-wide">
-      <div class="tile-header">
-        <div>
-          <div class="tile-title">Territory Rankings — 2024</div>
-          <div class="tile-title">Thermal &amp; Land Cover Priority Rankings</div>
-          <div class="tile-sub">Highest and lowest records by selected environmental indicator</div>
-        </div>
-        <div class="tab-group" id="rank-tabs">
-          <button class="tab active" data-rmetric="lst">Hottest (LST)</button>
-          <button class="tab" data-rmetric="ndvi">Vegetated (NDVI)</button>
-          <button class="tab" data-rmetric="ndbi">Built-up (NDBI)</button>
-        </div>
-      </div>
-      <canvas id="rank-chart"></canvas>
-    </div>
-  </div>
-</section>
-
-<!-- METHODOLOGY -->
-<section id="methodology" class="section">
-  <div class="section-label">Methodology</div>
-  <h2 class="section-title">Analysis Pipeline</h2>
-  <p class="section-desc">End-to-end sequential spatial data mining workflow applied to multi-scale earth observation composites.</p>
-
-  <div class="pipeline">
-    <div class="pipe-node">
-      <div class="pipe-icon-wrap"><span class="pipe-icon">🛰️</span></div>
-      <div class="pipe-body">
-        <h4>Data Acquisition</h4>
-        <p>Sentinel-2 Surface Reflectance (NDVI, NDBI) &amp; Landsat-8/9 Collection 2 (LST). Annual cloud-free median composites generated via Google Earth Engine.</p>
-        <div class="pipe-tags"><span>Sentinel-2</span><span>Landsat-8/9</span><span>GEE</span></div>
+      <div class="chart-container">
+        <canvas id="territory-rank-chart"></canvas>
       </div>
     </div>
-    <div class="pipe-connector"><span>→</span></div>
 
-    <div class="pipe-node">
-      <div class="pipe-icon-wrap"><span class="pipe-icon">🗺️</span></div>
-      <div class="pipe-body">
-        <h4>Spatial Aggregation</h4>
-        <p>National 37 States/UTs, state subdistricts, and Chennai 200 wards. Zonal statistics computed via spatial intersection and regional reduction.</p>
-        <div class="pipe-tags"><span>GeoJSON</span><span>Zonal Stats</span><span>GeoPandas</span></div>
-        <p>National 37 States/UTs, 20 Metropolitan Cities (municipal wards), and state administrative districts. Zonal statistics computed via spatial reduction.</p>
-        <div class="pipe-tags"><span>GeoJSON</span><span>Zonal Stats</span><span>Wards</span></div>
-      </div>
-    </div>
-    <div class="pipe-connector"><span>→</span></div>
+  </section>
 
-    <div class="pipe-node">
-      <div class="pipe-icon-wrap"><span class="pipe-icon">📈</span></div>
-      <div class="pipe-body">
-        <h4>Mann-Kendall Test</h4>
-        <p>Non-parametric monotonic trend detection evaluating Sen's slope and statistical significance (α = 0.05) across each 9-year time series.</p>
-        <div class="pipe-tags"><span>pymannkendall</span><span>Sen's Slope</span><span>p-value</span></div>
-      </div>
-    </div>
-    <div class="pipe-connector"><span>→</span></div>
+</main>
 
-    <div class="pipe-node">
-      <div class="pipe-icon-wrap"><span class="pipe-icon">🔍</span></div>
-      <div class="pipe-body">
-        <h4>PELT Regime Shift</h4>
-        <p>Pruned Exact Linear Time change-point analysis identifying structural breaks and abrupt warming inflection years caused by rapid urbanization.</p>
-        <div class="pipe-tags"><span>ruptures</span><span>PELT</span><span>Regime Shift</span></div>
-      </div>
-    </div>
-    <div class="pipe-connector"><span>→</span></div>
-
-    <div class="pipe-node">
-      <div class="pipe-icon-wrap"><span class="pipe-icon">📊</span></div>
-      <div class="pipe-body">
-        <h4>OLS Regression</h4>
-        <p>Multivariable ordinary least squares regression estimating the relative thermal impact of built impervious expansion versus canopy loss.</p>
-        <div class="pipe-tags"><span>scikit-learn</span><span>OLS</span><span>Coefficients</span></div>
-        <h4>Spatial Attribution</h4>
-        <p>Multivariable attribution evaluating thermal impact of built impervious footprint expansion against vegetative canopy loss.</p>
-        <div class="pipe-tags"><span>Attribution</span><span>Urban Heat Island</span></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="insight-grid">
-    <div class="insight-card insight-key">
-      <div class="insight-icon">🔬</div>
-      <h5>Core Finding</h5>
-      <p>Built-up index (NDBI) contributes +23.5°C per unit increase — over 4× stronger than vegetative cooling (-5.7°C), demonstrating that built land expansion is the primary driver of regional heat anomalies.</p>
-      <p>Built-up index (NDBI) contributes +23.5°C per unit increase — over 4× stronger than vegetative cooling (-5.7°C), demonstrating that concrete expansion is the dominant driver of metropolitan heat anomalies.</p>
-    </div>
-    <div class="insight-card">
-      <div class="insight-icon">⚠️</div>
-      <h5>Spatial Scale Resolution</h5>
-      <p>Averaging across administrative polygons smooths micro-climatic gradients. Regression models capture broad macro-level structural trends rather than localized street-level canyon heating.</p>
-      <p>Administrative polygon averaging preserves macroscopic thermal patterns while smoothing sub-ward microclimate variations.</p>
-    </div>
-    <div class="insight-card">
-      <div class="insight-icon">🛠</div>
-      <h5>System Architecture</h5>
-      <p>Python 3.10+ · FastAPI · In-Memory SQLite · Leaflet.js · Chart.js · Vercel Serverless Function · Zero External API Key Dependencies.</p>
-      <h5>Zero-Cloud Architecture</h5>
-      <p>Pre-processed and embedded vector geometries running on edge serverless functions with zero external API key requirements.</p>
-    </div>
-    <div class="insight-card">
-      <div class="insight-icon">📡</div>
-      <h5>Data Sources</h5>
-      <p>ESA Copernicus Sentinel-2 SR · NASA/USGS Landsat-8/9 Collection 2 Tier 1 · Survey of India &amp; Open Municipal Administrative Boundaries.</p>
-      <p>ESA Copernicus Sentinel-2 SR · NASA/USGS Landsat-8/9 Collection 2 Tier 1 · Open Municipal &amp; State Spatial Boundaries.</p>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
+<!-- Footer -->
 <footer class="footer">
   <div class="footer-inner">
-    <div class="footer-brand">
-      <strong>India Urban Heat Island &amp; Climate Observatory</strong>
-      <span class="footer-sub">National &amp; Municipal Surveillance · 2016–2024 · Sentinel-2 + Landsat-8/9 · FastAPI + Leaflet</span>
-      <span class="footer-sub">National &amp; Municipal Surveillance · 2016–2024 · Sentinel-2 + Landsat-8/9 · 20 Metros · 37 States</span>
+    <div class="footer-copy">
+      <strong>THERMALIS</strong> · National Urban Heat &amp; Climate Observatory · Embedded Geometries · Zero External API Key Dependencies
     </div>
     <div class="footer-links">
-      <a href="/api/docs" target="_blank">API Docs</a>
-      <a href="/api/v1/zones/geojson?city=india" target="_blank">GeoJSON (India)</a>
-      <a href="https://github.com" target="_blank">GitHub</a>
+      <a href="https://github.com/datta07/INDIAN-SHAPEFILES" target="_blank" rel="noopener">Boundary Attribution</a>
+      <a href="/api/docs" target="_blank">API Specification</a>
+      <a href="/data/geojson/india_states.geojson" target="_blank">National GeoJSON</a>
     </div>
   </div>
 </footer>

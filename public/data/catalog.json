@@ -1,0 +1,1203 @@
+{
+  "india": {
+    "key": "india",
+    "name": "All India",
+    "type": "National Overview",
+    "state": "37 States & UTs",
+    "center": [
+      22.97,
+      78.65
+    ],
+    "zoom": 5,
+    "count": 37,
+    "geojson": "data/geojson/india_states.geojson",
+    "baseline": {
+      "lst": 36.5,
+      "ndvi": 0.22,
+      "ndbi": 0.08,
+      "rainfall": 1250,
+      "spread": 4.5
+    }
+  },
+  "metros": {
+    "bengaluru": {
+      "key": "bengaluru",
+      "name": "Bengaluru",
+      "state": "Karnataka",
+      "type": "BBMP Municipal Wards",
+      "center": [
+        12.9716,
+        77.5946
+      ],
+      "zoom": 11,
+      "count": 197,
+      "geojson": "data/geojson/metros/bengaluru.geojson",
+      "baseline": {
+        "lst": 37.599999999999994,
+        "ndvi": 0.18,
+        "ndbi": 0.13,
+        "rainfall": 1150,
+        "spread": 4.2
+      }
+    },
+    "delhi": {
+      "key": "delhi",
+      "name": "Delhi NCR",
+      "state": "Delhi",
+      "type": "MCD Municipal Wards",
+      "center": [
+        28.6139,
+        77.209
+      ],
+      "zoom": 10,
+      "count": 261,
+      "geojson": "data/geojson/metros/delhi.geojson",
+      "baseline": {
+        "lst": 43.4,
+        "ndvi": 0.08,
+        "ndbi": 0.19,
+        "rainfall": 780,
+        "spread": 4.8
+      }
+    },
+    "mumbai": {
+      "key": "mumbai",
+      "name": "Mumbai",
+      "state": "Maharashtra",
+      "type": "BMC Administrative Wards",
+      "center": [
+        19.076,
+        72.8777
+      ],
+      "zoom": 11,
+      "count": 28,
+      "geojson": "data/geojson/metros/mumbai.geojson",
+      "baseline": {
+        "lst": 39.599999999999994,
+        "ndvi": 0.14,
+        "ndbi": 0.14,
+        "rainfall": 1200,
+        "spread": 4.5
+      }
+    },
+    "hyderabad": {
+      "key": "hyderabad",
+      "name": "Hyderabad",
+      "state": "Telangana",
+      "type": "GHMC Municipal Wards",
+      "center": [
+        17.385,
+        78.4867
+      ],
+      "zoom": 11,
+      "count": 150,
+      "geojson": "data/geojson/metros/hyderabad.geojson",
+      "baseline": {
+        "lst": 41.099999999999994,
+        "ndvi": 0.11,
+        "ndbi": 0.15,
+        "rainfall": 850,
+        "spread": 4.1
+      }
+    },
+    "chennai": {
+      "key": "chennai",
+      "name": "Chennai",
+      "state": "Tamil Nadu",
+      "type": "GCC Municipal Wards",
+      "center": [
+        13.0827,
+        80.2707
+      ],
+      "zoom": 11,
+      "count": 200,
+      "geojson": "data/geojson/metros/chennai.geojson",
+      "baseline": {
+        "lst": 39.699999999999996,
+        "ndvi": 0.14,
+        "ndbi": 0.12,
+        "rainfall": 1100,
+        "spread": 4.3
+      }
+    },
+    "ahmadabad": {
+      "key": "ahmadabad",
+      "name": "Ahmedabad",
+      "state": "Gujarat",
+      "type": "AMC Municipal Wards",
+      "center": [
+        23.0225,
+        72.5714
+      ],
+      "zoom": 11,
+      "count": 46,
+      "geojson": "data/geojson/metros/ahmadabad.geojson",
+      "baseline": {
+        "lst": 42.9,
+        "ndvi": 0.08,
+        "ndbi": 0.16,
+        "rainfall": 750,
+        "spread": 4.2
+      }
+    },
+    "pune": {
+      "key": "pune",
+      "name": "Pune",
+      "state": "Maharashtra",
+      "type": "PMC Municipal Wards",
+      "center": [
+        18.5204,
+        73.8567
+      ],
+      "zoom": 11,
+      "count": 42,
+      "geojson": "data/geojson/metros/pune.geojson",
+      "baseline": {
+        "lst": 39.599999999999994,
+        "ndvi": 0.14,
+        "ndbi": 0.14,
+        "rainfall": 1200,
+        "spread": 4.5
+      }
+    },
+    "jaipur": {
+      "key": "jaipur",
+      "name": "Jaipur",
+      "state": "Rajasthan",
+      "type": "JMC Municipal Wards",
+      "center": [
+        26.9124,
+        75.7873
+      ],
+      "zoom": 11,
+      "count": 149,
+      "geojson": "data/geojson/metros/jaipur.geojson",
+      "baseline": {
+        "lst": 44.199999999999996,
+        "ndvi": 0.08,
+        "ndbi": 0.18,
+        "rainfall": 450,
+        "spread": 4.6
+      }
+    },
+    "surat": {
+      "key": "surat",
+      "name": "Surat",
+      "state": "Gujarat",
+      "type": "SMC Municipal Wards",
+      "center": [
+        21.1702,
+        72.8311
+      ],
+      "zoom": 11,
+      "count": 30,
+      "geojson": "data/geojson/metros/surat.geojson",
+      "baseline": {
+        "lst": 42.9,
+        "ndvi": 0.08,
+        "ndbi": 0.16,
+        "rainfall": 750,
+        "spread": 4.2
+      }
+    },
+    "lucknow": {
+      "key": "lucknow",
+      "name": "Lucknow",
+      "state": "Uttar Pradesh",
+      "type": "LMC Municipal Wards",
+      "center": [
+        26.8467,
+        80.9462
+      ],
+      "zoom": 11,
+      "count": 110,
+      "geojson": "data/geojson/metros/lucknow.geojson",
+      "baseline": {
+        "lst": 42.0,
+        "ndvi": 0.13,
+        "ndbi": 0.15,
+        "rainfall": 920,
+        "spread": 4.5
+      }
+    },
+    "kanpur": {
+      "key": "kanpur",
+      "name": "Kanpur",
+      "state": "Uttar Pradesh",
+      "type": "KMC Municipal Wards",
+      "center": [
+        26.4499,
+        80.3319
+      ],
+      "zoom": 11,
+      "count": 108,
+      "geojson": "data/geojson/metros/kanpur.geojson",
+      "baseline": {
+        "lst": 42.0,
+        "ndvi": 0.13,
+        "ndbi": 0.15,
+        "rainfall": 920,
+        "spread": 4.5
+      }
+    },
+    "bhopal": {
+      "key": "bhopal",
+      "name": "Bhopal",
+      "state": "Madhya Pradesh",
+      "type": "BMC Municipal Wards",
+      "center": [
+        23.2599,
+        77.4126
+      ],
+      "zoom": 11,
+      "count": 85,
+      "geojson": "data/geojson/metros/bhopal.geojson",
+      "baseline": {
+        "lst": 42.4,
+        "ndvi": 0.12,
+        "ndbi": 0.14,
+        "rainfall": 1050,
+        "spread": 4.4
+      }
+    },
+    "indore": {
+      "key": "indore",
+      "name": "Indore",
+      "state": "Madhya Pradesh",
+      "type": "IMC Municipal Wards",
+      "center": [
+        22.7196,
+        75.8577
+      ],
+      "zoom": 11,
+      "count": 85,
+      "geojson": "data/geojson/metros/indore.geojson",
+      "baseline": {
+        "lst": 42.4,
+        "ndvi": 0.12,
+        "ndbi": 0.14,
+        "rainfall": 1050,
+        "spread": 4.4
+      }
+    },
+    "nagpur": {
+      "key": "nagpur",
+      "name": "Nagpur",
+      "state": "Maharashtra",
+      "type": "NMC Municipal Wards",
+      "center": [
+        21.1458,
+        79.0882
+      ],
+      "zoom": 11,
+      "count": 38,
+      "geojson": "data/geojson/metros/nagpur.geojson",
+      "baseline": {
+        "lst": 39.599999999999994,
+        "ndvi": 0.14,
+        "ndbi": 0.14,
+        "rainfall": 1200,
+        "spread": 4.5
+      }
+    },
+    "patna": {
+      "key": "patna",
+      "name": "Patna",
+      "state": "Bihar",
+      "type": "PMC Municipal Wards",
+      "center": [
+        25.5941,
+        85.1376
+      ],
+      "zoom": 11,
+      "count": 151,
+      "geojson": "data/geojson/metros/patna.geojson",
+      "baseline": {
+        "lst": 41.3,
+        "ndvi": 0.15,
+        "ndbi": 0.13,
+        "rainfall": 1150,
+        "spread": 3.9
+      }
+    },
+    "visakhapatnam": {
+      "key": "visakhapatnam",
+      "name": "Visakhapatnam",
+      "state": "Andhra Pradesh",
+      "type": "GVMC Municipal Wards",
+      "center": [
+        17.6868,
+        83.2185
+      ],
+      "zoom": 11,
+      "count": 91,
+      "geojson": "data/geojson/metros/visakhapatnam.geojson",
+      "baseline": {
+        "lst": 40.5,
+        "ndvi": 0.13,
+        "ndbi": 0.13,
+        "rainfall": 950,
+        "spread": 4.0
+      }
+    },
+    "vadodara": {
+      "key": "vadodara",
+      "name": "Vadodara",
+      "state": "Gujarat",
+      "type": "VMC Municipal Wards",
+      "center": [
+        22.3072,
+        73.1812
+      ],
+      "zoom": 11,
+      "count": 18,
+      "geojson": "data/geojson/metros/vadodara.geojson",
+      "baseline": {
+        "lst": 42.9,
+        "ndvi": 0.08,
+        "ndbi": 0.16,
+        "rainfall": 750,
+        "spread": 4.2
+      }
+    },
+    "thane": {
+      "key": "thane",
+      "name": "Thane",
+      "state": "Maharashtra",
+      "type": "TMC Municipal Wards",
+      "center": [
+        19.2183,
+        72.9781
+      ],
+      "zoom": 11,
+      "count": 32,
+      "geojson": "data/geojson/metros/thane.geojson",
+      "baseline": {
+        "lst": 39.599999999999994,
+        "ndvi": 0.14,
+        "ndbi": 0.14,
+        "rainfall": 1200,
+        "spread": 4.5
+      }
+    },
+    "navi_mumbai": {
+      "key": "navi_mumbai",
+      "name": "Navi Mumbai",
+      "state": "Maharashtra",
+      "type": "NMMC Municipal Wards",
+      "center": [
+        19.033,
+        73.0297
+      ],
+      "zoom": 11,
+      "count": 109,
+      "geojson": "data/geojson/metros/navi_mumbai.geojson",
+      "baseline": {
+        "lst": 39.599999999999994,
+        "ndvi": 0.14,
+        "ndbi": 0.14,
+        "rainfall": 1200,
+        "spread": 4.5
+      }
+    },
+    "pimpri_chinchwad": {
+      "key": "pimpri_chinchwad",
+      "name": "Pimpri Chinchwad",
+      "state": "Maharashtra",
+      "type": "PCMC Municipal Wards",
+      "center": [
+        18.6298,
+        73.7997
+      ],
+      "zoom": 11,
+      "count": 32,
+      "geojson": "data/geojson/metros/pimpri_chinchwad.geojson",
+      "baseline": {
+        "lst": 39.599999999999994,
+        "ndvi": 0.14,
+        "ndbi": 0.14,
+        "rainfall": 1200,
+        "spread": 4.5
+      }
+    }
+  },
+  "states": {
+    "andaman_&_nicobar": {
+      "key": "andaman_&_nicobar",
+      "name": "Andaman & Nicobar",
+      "state": "Andaman & Nicobar",
+      "type": "Administrative Districts",
+      "center": [
+        11.74,
+        92.65
+      ],
+      "zoom": 7,
+      "count": 3,
+      "metro": null,
+      "geojson": "data/geojson/states/andaman_nicobar.geojson",
+      "baseline": {
+        "lst": 32.5,
+        "ndvi": 0.36,
+        "ndbi": 0.04,
+        "rainfall": 3100,
+        "spread": 2.6
+      }
+    },
+    "andhra_pradesh": {
+      "key": "andhra_pradesh",
+      "name": "Andhra Pradesh",
+      "state": "Andhra Pradesh",
+      "type": "Administrative Districts",
+      "center": [
+        15.91,
+        79.74
+      ],
+      "zoom": 7,
+      "count": 13,
+      "metro": "visakhapatnam",
+      "geojson": "data/geojson/states/andhra_pradesh.geojson",
+      "baseline": {
+        "lst": 39.7,
+        "ndvi": 0.17,
+        "ndbi": 0.09,
+        "rainfall": 950,
+        "spread": 4.0
+      }
+    },
+    "arunachal_pradesh": {
+      "key": "arunachal_pradesh",
+      "name": "Arunachal Pradesh",
+      "state": "Arunachal Pradesh",
+      "type": "Administrative Districts",
+      "center": [
+        28.21,
+        94.72
+      ],
+      "zoom": 7,
+      "count": 25,
+      "metro": null,
+      "geojson": "data/geojson/states/arunachal_pradesh.geojson",
+      "baseline": {
+        "lst": 24.2,
+        "ndvi": 0.38,
+        "ndbi": 0.03,
+        "rainfall": 2800,
+        "spread": 3.5
+      }
+    },
+    "assam": {
+      "key": "assam",
+      "name": "Assam",
+      "state": "Assam",
+      "type": "Administrative Districts",
+      "center": [
+        26.2,
+        92.93
+      ],
+      "zoom": 7,
+      "count": 33,
+      "metro": null,
+      "geojson": "data/geojson/states/assam.geojson",
+      "baseline": {
+        "lst": 32.8,
+        "ndvi": 0.29,
+        "ndbi": 0.06,
+        "rainfall": 2200,
+        "spread": 3.4
+      }
+    },
+    "bihar": {
+      "key": "bihar",
+      "name": "Bihar",
+      "state": "Bihar",
+      "type": "Administrative Districts",
+      "center": [
+        25.09,
+        85.31
+      ],
+      "zoom": 7,
+      "count": 38,
+      "metro": "patna",
+      "geojson": "data/geojson/states/bihar.geojson",
+      "baseline": {
+        "lst": 40.5,
+        "ndvi": 0.19,
+        "ndbi": 0.09,
+        "rainfall": 1150,
+        "spread": 3.9
+      }
+    },
+    "chandigarh": {
+      "key": "chandigarh",
+      "name": "Chandigarh",
+      "state": "Chandigarh",
+      "type": "Administrative Districts",
+      "center": [
+        30.73,
+        76.77
+      ],
+      "zoom": 11,
+      "count": 1,
+      "metro": null,
+      "geojson": "data/geojson/states/chandigarh.geojson",
+      "baseline": {
+        "lst": 41.5,
+        "ndvi": 0.16,
+        "ndbi": 0.14,
+        "rainfall": 950,
+        "spread": 2.5
+      }
+    },
+    "chhattisgarh": {
+      "key": "chhattisgarh",
+      "name": "Chhattisgarh",
+      "state": "Chhattisgarh",
+      "type": "Administrative Districts",
+      "center": [
+        21.27,
+        81.86
+      ],
+      "zoom": 7,
+      "count": 28,
+      "metro": null,
+      "geojson": "data/geojson/states/chhattisgarh.geojson",
+      "baseline": {
+        "lst": 40.2,
+        "ndvi": 0.24,
+        "ndbi": 0.08,
+        "rainfall": 1350,
+        "spread": 3.6
+      }
+    },
+    "dadra_&_nagar_haveli": {
+      "key": "dadra_&_nagar_haveli",
+      "name": "Dadra & Nagar Haveli",
+      "state": "Dadra & Nagar Haveli",
+      "type": "Administrative Districts",
+      "center": [
+        20.18,
+        73.01
+      ],
+      "zoom": 10,
+      "count": 1,
+      "metro": null,
+      "geojson": "data/geojson/states/dadra_nagar_haveli.geojson",
+      "baseline": {
+        "lst": 37.4,
+        "ndvi": 0.22,
+        "ndbi": 0.08,
+        "rainfall": 1950,
+        "spread": 2.5
+      }
+    },
+    "daman_&_diu": {
+      "key": "daman_&_diu",
+      "name": "Daman & Diu",
+      "state": "Daman & Diu",
+      "type": "Administrative Districts",
+      "center": [
+        20.42,
+        72.83
+      ],
+      "zoom": 10,
+      "count": 2,
+      "metro": null,
+      "geojson": "data/geojson/states/daman_diu.geojson",
+      "baseline": {
+        "lst": 36.8,
+        "ndvi": 0.16,
+        "ndbi": 0.1,
+        "rainfall": 1600,
+        "spread": 2.3
+      }
+    },
+    "delhi": {
+      "key": "delhi",
+      "name": "Delhi",
+      "state": "Delhi",
+      "type": "Administrative Districts",
+      "center": [
+        28.6139,
+        77.209
+      ],
+      "zoom": 10,
+      "count": 261,
+      "metro": "delhi",
+      "geojson": "data/geojson/states/delhi.geojson",
+      "baseline": {
+        "lst": 42.6,
+        "ndvi": 0.11,
+        "ndbi": 0.15,
+        "rainfall": 780,
+        "spread": 4.8
+      }
+    },
+    "goa": {
+      "key": "goa",
+      "name": "Goa",
+      "state": "Goa",
+      "type": "Administrative Districts",
+      "center": [
+        15.29,
+        74.12
+      ],
+      "zoom": 9,
+      "count": 2,
+      "metro": null,
+      "geojson": "data/geojson/states/goa.geojson",
+      "baseline": {
+        "lst": 34.2,
+        "ndvi": 0.3,
+        "ndbi": 0.06,
+        "rainfall": 2600,
+        "spread": 2.8
+      }
+    },
+    "gujarat": {
+      "key": "gujarat",
+      "name": "Gujarat",
+      "state": "Gujarat",
+      "type": "Administrative Districts",
+      "center": [
+        22.25,
+        71.19
+      ],
+      "zoom": 7,
+      "count": 33,
+      "metro": "ahmadabad",
+      "geojson": "data/geojson/states/gujarat.geojson",
+      "baseline": {
+        "lst": 42.1,
+        "ndvi": 0.12,
+        "ndbi": 0.12,
+        "rainfall": 750,
+        "spread": 4.2
+      }
+    },
+    "haryana": {
+      "key": "haryana",
+      "name": "Haryana",
+      "state": "Haryana",
+      "type": "Administrative Districts",
+      "center": [
+        29.05,
+        76.08
+      ],
+      "zoom": 8,
+      "count": 22,
+      "metro": null,
+      "geojson": "data/geojson/states/haryana.geojson",
+      "baseline": {
+        "lst": 41.8,
+        "ndvi": 0.14,
+        "ndbi": 0.11,
+        "rainfall": 620,
+        "spread": 3.8
+      }
+    },
+    "himachal_pradesh": {
+      "key": "himachal_pradesh",
+      "name": "Himachal Pradesh",
+      "state": "Himachal Pradesh",
+      "type": "Administrative Districts",
+      "center": [
+        31.1,
+        77.17
+      ],
+      "zoom": 8,
+      "count": 12,
+      "metro": null,
+      "geojson": "data/geojson/states/himachal_pradesh.geojson",
+      "baseline": {
+        "lst": 23.6,
+        "ndvi": 0.28,
+        "ndbi": 0.05,
+        "rainfall": 1250,
+        "spread": 4.5
+      }
+    },
+    "jammu_&_kashmir": {
+      "key": "jammu_&_kashmir",
+      "name": "Jammu & Kashmir",
+      "state": "Jammu & Kashmir",
+      "type": "Administrative Districts",
+      "center": [
+        33.77,
+        76.57
+      ],
+      "zoom": 7,
+      "count": 22,
+      "metro": null,
+      "geojson": "data/geojson/states/jammu_kashmir.geojson",
+      "baseline": {
+        "lst": 22.1,
+        "ndvi": 0.24,
+        "ndbi": 0.05,
+        "rainfall": 1050,
+        "spread": 4.8
+      }
+    },
+    "jharkhand": {
+      "key": "jharkhand",
+      "name": "Jharkhand",
+      "state": "Jharkhand",
+      "type": "Administrative Districts",
+      "center": [
+        23.61,
+        85.27
+      ],
+      "zoom": 7,
+      "count": 24,
+      "metro": null,
+      "geojson": "data/geojson/states/jharkhand.geojson",
+      "baseline": {
+        "lst": 39.8,
+        "ndvi": 0.22,
+        "ndbi": 0.08,
+        "rainfall": 1300,
+        "spread": 3.7
+      }
+    },
+    "karnataka": {
+      "key": "karnataka",
+      "name": "Karnataka",
+      "state": "Karnataka",
+      "type": "Administrative Districts",
+      "center": [
+        15.31,
+        75.71
+      ],
+      "zoom": 7,
+      "count": 30,
+      "metro": "bengaluru",
+      "geojson": "data/geojson/states/karnataka.geojson",
+      "baseline": {
+        "lst": 36.8,
+        "ndvi": 0.22,
+        "ndbi": 0.09,
+        "rainfall": 1150,
+        "spread": 4.2
+      }
+    },
+    "kerala": {
+      "key": "kerala",
+      "name": "Kerala",
+      "state": "Kerala",
+      "type": "Administrative Districts",
+      "center": [
+        10.85,
+        76.27
+      ],
+      "zoom": 8,
+      "count": 14,
+      "metro": null,
+      "geojson": "data/geojson/states/kerala.geojson",
+      "baseline": {
+        "lst": 33.4,
+        "ndvi": 0.32,
+        "ndbi": 0.05,
+        "rainfall": 2800,
+        "spread": 3.2
+      }
+    },
+    "ladakh": {
+      "key": "ladakh",
+      "name": "Ladakh",
+      "state": "Ladakh",
+      "type": "Administrative Districts",
+      "center": [
+        34.15,
+        77.57
+      ],
+      "zoom": 7,
+      "count": 2,
+      "metro": null,
+      "geojson": "data/geojson/states/ladakh.geojson",
+      "baseline": {
+        "lst": 17.8,
+        "ndvi": 0.06,
+        "ndbi": 0.04,
+        "rainfall": 120,
+        "spread": 4.2
+      }
+    },
+    "lakshadweep": {
+      "key": "lakshadweep",
+      "name": "Lakshadweep",
+      "state": "Lakshadweep",
+      "type": "Administrative Districts",
+      "center": [
+        10.56,
+        72.64
+      ],
+      "zoom": 8,
+      "count": 1,
+      "metro": null,
+      "geojson": "data/geojson/states/lakshadweep.geojson",
+      "baseline": {
+        "lst": 32.2,
+        "ndvi": 0.33,
+        "ndbi": 0.04,
+        "rainfall": 1900,
+        "spread": 2.2
+      }
+    },
+    "madhya_pradesh": {
+      "key": "madhya_pradesh",
+      "name": "Madhya Pradesh",
+      "state": "Madhya Pradesh",
+      "type": "Administrative Districts",
+      "center": [
+        22.97,
+        78.65
+      ],
+      "zoom": 7,
+      "count": 52,
+      "metro": "bhopal",
+      "geojson": "data/geojson/states/madhya_pradesh.geojson",
+      "baseline": {
+        "lst": 41.6,
+        "ndvi": 0.16,
+        "ndbi": 0.1,
+        "rainfall": 1050,
+        "spread": 4.4
+      }
+    },
+    "maharashtra": {
+      "key": "maharashtra",
+      "name": "Maharashtra",
+      "state": "Maharashtra",
+      "type": "Administrative Districts",
+      "center": [
+        19.75,
+        75.71
+      ],
+      "zoom": 7,
+      "count": 36,
+      "metro": "mumbai",
+      "geojson": "data/geojson/states/maharashtra.geojson",
+      "baseline": {
+        "lst": 38.8,
+        "ndvi": 0.18,
+        "ndbi": 0.1,
+        "rainfall": 1200,
+        "spread": 4.5
+      }
+    },
+    "manipur": {
+      "key": "manipur",
+      "name": "Manipur",
+      "state": "Manipur",
+      "type": "Administrative Districts",
+      "center": [
+        24.66,
+        93.9
+      ],
+      "zoom": 8,
+      "count": 16,
+      "metro": null,
+      "geojson": "data/geojson/states/manipur.geojson",
+      "baseline": {
+        "lst": 28.1,
+        "ndvi": 0.31,
+        "ndbi": 0.05,
+        "rainfall": 1800,
+        "spread": 3.0
+      }
+    },
+    "meghalaya": {
+      "key": "meghalaya",
+      "name": "Meghalaya",
+      "state": "Meghalaya",
+      "type": "Administrative Districts",
+      "center": [
+        25.46,
+        91.36
+      ],
+      "zoom": 8,
+      "count": 11,
+      "metro": null,
+      "geojson": "data/geojson/states/meghalaya.geojson",
+      "baseline": {
+        "lst": 27.5,
+        "ndvi": 0.34,
+        "ndbi": 0.04,
+        "rainfall": 3400,
+        "spread": 3.0
+      }
+    },
+    "mizoram": {
+      "key": "mizoram",
+      "name": "Mizoram",
+      "state": "Mizoram",
+      "type": "Administrative Districts",
+      "center": [
+        23.16,
+        92.93
+      ],
+      "zoom": 8,
+      "count": 11,
+      "metro": null,
+      "geojson": "data/geojson/states/mizoram.geojson",
+      "baseline": {
+        "lst": 27.4,
+        "ndvi": 0.35,
+        "ndbi": 0.04,
+        "rainfall": 2100,
+        "spread": 2.9
+      }
+    },
+    "nagaland": {
+      "key": "nagaland",
+      "name": "Nagaland",
+      "state": "Nagaland",
+      "type": "Administrative Districts",
+      "center": [
+        26.15,
+        94.56
+      ],
+      "zoom": 8,
+      "count": 11,
+      "metro": null,
+      "geojson": "data/geojson/states/nagaland.geojson",
+      "baseline": {
+        "lst": 26.8,
+        "ndvi": 0.34,
+        "ndbi": 0.04,
+        "rainfall": 1900,
+        "spread": 3.1
+      }
+    },
+    "orissa": {
+      "key": "orissa",
+      "name": "Odisha",
+      "state": "Odisha",
+      "type": "Administrative Districts",
+      "center": [
+        20.95,
+        85.09
+      ],
+      "zoom": 7,
+      "count": 30,
+      "metro": null,
+      "geojson": "data/geojson/states/orissa.geojson",
+      "baseline": {
+        "lst": 39.5,
+        "ndvi": 0.23,
+        "ndbi": 0.08,
+        "rainfall": 1450,
+        "spread": 3.8
+      }
+    },
+    "puducherry": {
+      "key": "puducherry",
+      "name": "Puducherry",
+      "state": "Puducherry",
+      "type": "Administrative Districts",
+      "center": [
+        11.94,
+        79.8
+      ],
+      "zoom": 9,
+      "count": 4,
+      "metro": null,
+      "geojson": "data/geojson/states/puducherry.geojson",
+      "baseline": {
+        "lst": 38.2,
+        "ndvi": 0.18,
+        "ndbi": 0.09,
+        "rainfall": 1300,
+        "spread": 2.4
+      }
+    },
+    "punjab": {
+      "key": "punjab",
+      "name": "Punjab",
+      "state": "Punjab",
+      "type": "Administrative Districts",
+      "center": [
+        31.14,
+        75.34
+      ],
+      "zoom": 8,
+      "count": 22,
+      "metro": null,
+      "geojson": "data/geojson/states/punjab.geojson",
+      "baseline": {
+        "lst": 40.9,
+        "ndvi": 0.18,
+        "ndbi": 0.1,
+        "rainfall": 680,
+        "spread": 3.5
+      }
+    },
+    "rajasthan": {
+      "key": "rajasthan",
+      "name": "Rajasthan",
+      "state": "Rajasthan",
+      "type": "Administrative Districts",
+      "center": [
+        27.02,
+        74.21
+      ],
+      "zoom": 7,
+      "count": 33,
+      "metro": "jaipur",
+      "geojson": "data/geojson/states/rajasthan.geojson",
+      "baseline": {
+        "lst": 43.4,
+        "ndvi": 0.09,
+        "ndbi": 0.14,
+        "rainfall": 450,
+        "spread": 4.6
+      }
+    },
+    "sikkim": {
+      "key": "sikkim",
+      "name": "Sikkim",
+      "state": "Sikkim",
+      "type": "Administrative Districts",
+      "center": [
+        27.53,
+        88.51
+      ],
+      "zoom": 9,
+      "count": 6,
+      "metro": null,
+      "geojson": "data/geojson/states/sikkim.geojson",
+      "baseline": {
+        "lst": 21.4,
+        "ndvi": 0.35,
+        "ndbi": 0.03,
+        "rainfall": 2600,
+        "spread": 3.6
+      }
+    },
+    "tamil_nadu": {
+      "key": "tamil_nadu",
+      "name": "Tamil Nadu",
+      "state": "Tamil Nadu",
+      "type": "Administrative Districts",
+      "center": [
+        11.12,
+        78.65
+      ],
+      "zoom": 7,
+      "count": 38,
+      "metro": "chennai",
+      "geojson": "data/geojson/states/tamil_nadu.geojson",
+      "baseline": {
+        "lst": 38.9,
+        "ndvi": 0.18,
+        "ndbi": 0.08,
+        "rainfall": 1100,
+        "spread": 4.3
+      }
+    },
+    "telangana": {
+      "key": "telangana",
+      "name": "Telangana",
+      "state": "Telangana",
+      "type": "Administrative Districts",
+      "center": [
+        18.11,
+        79.01
+      ],
+      "zoom": 7,
+      "count": 33,
+      "metro": "hyderabad",
+      "geojson": "data/geojson/states/telangana.geojson",
+      "baseline": {
+        "lst": 40.3,
+        "ndvi": 0.15,
+        "ndbi": 0.11,
+        "rainfall": 850,
+        "spread": 4.1
+      }
+    },
+    "tripura": {
+      "key": "tripura",
+      "name": "Tripura",
+      "state": "Tripura",
+      "type": "Administrative Districts",
+      "center": [
+        23.94,
+        91.98
+      ],
+      "zoom": 8,
+      "count": 8,
+      "metro": null,
+      "geojson": "data/geojson/states/tripura.geojson",
+      "baseline": {
+        "lst": 33.1,
+        "ndvi": 0.28,
+        "ndbi": 0.06,
+        "rainfall": 2100,
+        "spread": 3.2
+      }
+    },
+    "uttar_pradesh": {
+      "key": "uttar_pradesh",
+      "name": "Uttar Pradesh",
+      "state": "Uttar Pradesh",
+      "type": "Administrative Districts",
+      "center": [
+        26.84,
+        80.94
+      ],
+      "zoom": 7,
+      "count": 75,
+      "metro": "lucknow",
+      "geojson": "data/geojson/states/uttar_pradesh.geojson",
+      "baseline": {
+        "lst": 41.2,
+        "ndvi": 0.17,
+        "ndbi": 0.11,
+        "rainfall": 920,
+        "spread": 4.5
+      }
+    },
+    "uttarakhand": {
+      "key": "uttarakhand",
+      "name": "Uttarakhand",
+      "state": "Uttarakhand",
+      "type": "Administrative Districts",
+      "center": [
+        30.06,
+        79.01
+      ],
+      "zoom": 8,
+      "count": 13,
+      "metro": null,
+      "geojson": "data/geojson/states/uttarakhand.geojson",
+      "baseline": {
+        "lst": 26.8,
+        "ndvi": 0.29,
+        "ndbi": 0.06,
+        "rainfall": 1550,
+        "spread": 4.6
+      }
+    },
+    "west_bengal": {
+      "key": "west_bengal",
+      "name": "West Bengal",
+      "state": "West Bengal",
+      "type": "Administrative Districts",
+      "center": [
+        22.98,
+        87.85
+      ],
+      "zoom": 7,
+      "count": 23,
+      "metro": null,
+      "geojson": "data/geojson/states/west_bengal.geojson",
+      "baseline": {
+        "lst": 38.6,
+        "ndvi": 0.21,
+        "ndbi": 0.09,
+        "rainfall": 1700,
+        "spread": 3.9
+      }
+    }
+  }
+}
